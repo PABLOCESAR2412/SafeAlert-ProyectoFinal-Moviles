@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.LoginPage"
+             Title="SafeAlert"
+             BackgroundColor="{StaticResource Surface}">
+
+    <ScrollView x:Name="RootScroll">
+        <VerticalStackLayout Padding="18,12,18,28"
+                             Spacing="14"
+                             MaximumWidthRequest="480"
+                             HorizontalOptions="Center">
+
+            <!-- Estado del despacho -->
+            <Border BackgroundColor="{StaticResource NavyTint}"
+                    StrokeThickness="0"
+                    Padding="12,9"
+                    StrokeShape="RoundRectangle 999">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
+                             Color="{StaticResource Green}" VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="DESPACHO CONECTADO"
+                           Style="{StaticResource CaptionStrong}"
+                           TextColor="{StaticResource Navy}"
+                           VerticalOptions="Center" />
+                    <HorizontalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center">
+                        <Label Text="&#xF013;"
+                               FontFamily="MaterialIcons"
+                               FontSize="16"
+                               TextColor="{StaticResource Blue}" />
+                        <Label Text="En Línea"
+                               FontFamily="InterSemiBold"
+                               FontSize="12"
+                               TextColor="{StaticResource Blue}" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Marca -->
+            <Border WidthRequest="92"
+                    HeightRequest="92"
+                    BackgroundColor="{StaticResource Navy}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 26"
+                    HorizontalOptions="Center"
+                    Margin="0,6,0,0">
+                <Border.Shadow>
+                    <Shadow Brush="#1F3864" Offset="0,8" Radius="18" Opacity="0.25" />
+                </Border.Shadow>
+                <Grid>
+                    <Label Text="&#xE9E0;"
+                           FontFamily="MaterialIcons"
+                           FontSize="50"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                    <Border WidthRequest="28"
+                            HeightRequest="28"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 14"
+                            HorizontalOptions="End"
+                            VerticalOptions="End"
+                            Margin="0,0,2,2">
+                        <Label Text="&#xEF76;"
+                               FontFamily="MaterialIcons"
+                               FontSize="18"
+                               TextColor="{StaticResource Blue}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Label Text="SafeAlert"
+                   Style="{StaticResource H1}"
+                   FontSize="34"
+                   HorizontalOptions="Center" />
+            <Label Text="Seguridad personal y respuesta inmediata ante emergencias"
+                   Style="{StaticResource Body}"
+                   FontSize="13"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   MaximumWidthRequest="330" />
+
+            <!-- Selector de modo -->
+            <Border BackgroundColor="#EDEEF0"
+                    StrokeThickness="0"
+                    Padding="4"
+                    StrokeShape="RoundRectangle 14"
+                    Margin="0,4,0,0">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                    <Border x:Name="LoginTab"
+                            Grid.Column="0"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            Padding="0,12"
+                            StrokeShape="RoundRectangle 10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LoginTab_Tapped" />
+                        </Border.GestureRecognizers>
+                        <Label x:Name="LoginTabLabel"
+                               Text="Iniciar Sesión"
+                               FontFamily="InterBold"
+                               FontSize="14"
+                               TextColor="{StaticResource Navy}"
+                               HorizontalOptions="Center" />
+                    </Border>
+
+                    <Border x:Name="RegisterTab"
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="0"
+                            Padding="0,12"
+                            StrokeShape="RoundRectangle 10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="RegisterTab_Tapped" />
+                        </Border.GestureRecognizers>
+                        <Label x:Name="RegisterTabLabel"
+                               Text="Crear Cuenta"
+                               FontFamily="InterSemiBold"
+                               FontSize="14"
+                               TextColor="{StaticResource TextMuted}"
+                               HorizontalOptions="Center" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Panel de inicio de sesión -->
+            <Border x:Name="LoginPanel" Style="{StaticResource Card}" Padding="18">
+                <VerticalStackLayout Spacing="10">
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Correo o Teléfono" Style="{StaticResource LabelBold}" />
+                        <Label Grid.Column="1" Text="Requerido"
+                               Style="{StaticResource Caption}"
+                               TextColor="{StaticResource TextSoft}" />
+                    </Grid>
+
+                    <Border x:Name="LoginUserBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Text="&#xF8D1;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="LoginUserEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="ejemplo@correo.com"
+                                   Keyboard="Email"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="LoginUserError" Style="{StaticResource ErrorLabel}" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Contraseña" Style="{StaticResource LabelBold}" />
+                        <Label Grid.Column="1"
+                               Text="¿Olvidaste tu contraseña?"
+                               FontFamily="InterSemiBold"
+                               FontSize="12"
+                               TextColor="{StaticResource Blue}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ForgotPassword_Tapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <Border x:Name="LoginPassBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Text="&#xE899;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="LoginPassEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="••••••••••••"
+                                   IsPassword="True"
+                                   ReturnType="Go"
+                                   Completed="LoginPass_Completed" />
+                            <Button x:Name="LoginEyeButton"
+                                    Grid.Column="2"
+                                    Text="&#xE8F4;"
+                                    Style="{StaticResource IconButton}"
+                                    Clicked="ToggleLoginPassword_Clicked" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="LoginPassError" Style="{StaticResource ErrorLabel}" />
+                    <Label x:Name="LoginGeneralError" Style="{StaticResource ErrorLabel}" />
+
+                    <Button Text="Iniciar Sesión de forma Segura"
+                            Style="{StaticResource NavyButton}"
+                            ContentLayout="Left,10"
+                            Clicked="LoginButton_Clicked"
+                            Margin="0,2,0,0">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons"
+                                             Glyph="&#xE899;"
+                                             Color="White"
+                                             Size="20" />
+                        </Button.ImageSource>
+                    </Button>
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="10" Margin="0,2">
+                        <BoxView HeightRequest="1" Color="{StaticResource Line}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="o" Style="{StaticResource Caption}" />
+                        <BoxView Grid.Column="2" HeightRequest="1" Color="{StaticResource Line}" VerticalOptions="Center" />
+                    </Grid>
+
+                    <Button Text="Ingreso Rápido con Biometría"
+                            Style="{StaticResource SoftButton}"
+                            ContentLayout="Left,10"
+                            Clicked="BiometricButton_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons"
+                                             Glyph="&#xE90D;"
+                                             Color="{StaticResource Navy}"
+                                             Size="22" />
+                        </Button.ImageSource>
+                    </Button>
+                    <Label HorizontalTextAlignment="Center" Margin="0,6,0,0">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="¿No tienes cuenta aún? " TextColor="{StaticResource TextMuted}" FontSize="13" />
+                                <Span Text="Regístrate en 30 segundos"
+                                      TextColor="{StaticResource Blue}"
+                                      FontFamily="InterSemiBold"
+                                      FontSize="13" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="RegisterLink_Tapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                            StrokeThickness="0"
+                            Padding="12,10"
+                            StrokeShape="RoundRectangle 999">
+                        <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="&#xE593;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="18"
+                                   TextColor="{StaticResource Blue}" />
+                            <Label Text="Cifrado de extremo a extremo (E2EE)"
+                                   Style="{StaticResource Caption}"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <Border BackgroundColor="{StaticResource NavyTint}"
+                            StrokeThickness="0"
+                            Padding="12"
+                            StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="ACCESO DE DEMOSTRACIÓN"
+                                   Style="{StaticResource CaptionStrong}"
+                                   TextColor="{StaticResource Navy}" />
+                            <Label Text="elena.rosales@safealert.app  •  123456"
+                                   FontFamily="InterMedium"
+                                   FontSize="12"
+                                   TextColor="{StaticResource Navy}" />
+                            <Label Text="Toca aquí para completar los datos"
+                                   FontSize="10"
+                                   TextColor="{StaticResource Blue}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="DemoAccount_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Panel de registro -->
+            <Border x:Name="RegisterPanel" Style="{StaticResource Card}" Padding="18" IsVisible="False">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label Text="Crea tu cuenta protegida" Style="{StaticResource H3}" />
+                    <Label Text="Tus datos permiten enviar ayuda con tu ubicación exacta."
+                           Style="{StaticResource BodySmall}" />
+
+                    <Label Text="Nombre completo" Style="{StaticResource LabelBold}" Margin="0,4,0,0" />
+                    <Border x:Name="RegNameBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xF0D3;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="RegNameEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="Elena Rosales Martínez"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="RegNameError" Style="{StaticResource ErrorLabel}" />
+
+                    <Label Text="Teléfono" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="RegPhoneBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xF0D4;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="RegPhoneEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="+593 99 123 4567"
+                                   Keyboard="Telephone"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="RegPhoneError" Style="{StaticResource ErrorLabel}" />
+
+                    <Label Text="Correo electrónico" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="RegEmailBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xF8D1;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="RegEmailEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="tu@correo.com"
+                                   Keyboard="Email"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="RegEmailError" Style="{StaticResource ErrorLabel}" />
+
+                    <Label Text="Contraseña" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="RegPassBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Text="&#xE899;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="RegPassEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="Mínimo 6 caracteres"
+                                   IsPassword="True"
+                                   ReturnType="Next" />
+                            <Button x:Name="RegEyeButton"
+                                    Grid.Column="2"
+                                    Text="&#xE8F4;"
+                                    Style="{StaticResource IconButton}"
+                                    Clicked="ToggleRegisterPassword_Clicked" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="RegPassError" Style="{StaticResource ErrorLabel}" />
+
+                    <Label Text="Confirmar contraseña" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="RegConfirmBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Text="&#xE899;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="RegConfirmEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="Repite tu contraseña"
+                                   IsPassword="True"
+                                   ReturnType="Done" />
+                            <Button x:Name="RegConfirmEyeButton"
+                                    Grid.Column="2"
+                                    Text="&#xE8F4;"
+                                    Style="{StaticResource IconButton}"
+                                    Clicked="ToggleRegisterConfirmPassword_Clicked" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="RegConfirmError" Style="{StaticResource ErrorLabel}" />
+                    <Label x:Name="RegGeneralError" Style="{StaticResource ErrorLabel}" />
+
+                    <Button Text="Crear mi cuenta segura"
+                            Style="{StaticResource NavyButton}"
+                            ContentLayout="Left,10"
+                            Clicked="RegisterButton_Clicked"
+                            Margin="0,4,0,0">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons"
+                                             Glyph="&#xF650;"
+                                             Color="White"
+                                             Size="20" />
+                        </Button.ImageSource>
+                    </Button>
+                    <Label HorizontalTextAlignment="Center" Margin="0,4,0,0">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="¿Ya tienes una cuenta? " TextColor="{StaticResource TextMuted}" FontSize="13" />
+                                <Span Text="Inicia sesión"
+                                      TextColor="{StaticResource Blue}"
+                                      FontFamily="InterSemiBold"
+                                      FontSize="13" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LoginLink_Tapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="SafeAlert v1.0 • Protección 24/7"
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource TextLight}"
+                   Margin="0,4,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

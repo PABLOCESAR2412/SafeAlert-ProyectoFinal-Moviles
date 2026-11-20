@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.HistoryView"
+             BackgroundColor="{StaticResource Surface}">
+
+    <ScrollView x:Name="HistoryScroll">
+        <VerticalStackLayout Padding="16" Spacing="13">
+
+            <!-- Encabezado -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                    <Border WidthRequest="43"
+                            HeightRequest="43"
+                            BackgroundColor="#EEF2FF"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            VerticalOptions="Center">
+                        <Label Text="&#xE9E0;"
+                               FontFamily="MaterialIcons"
+                               FontSize="22"
+                               TextColor="{StaticResource Navy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                        <Label Text="Registro de Alertas y Eventos"
+                               FontFamily="InterBold"
+                               FontSize="16"
+                               TextColor="{StaticResource TextPrimary}"
+                               LineBreakMode="WordWrap" />
+                        <Label Text="Historial cifrado y trazable"
+                               FontSize="12"
+                               TextColor="{StaticResource TextMuted}" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2"
+                            Text="&#xF090;"
+                            Style="{StaticResource IconButton}"
+                            BackgroundColor="{StaticResource SurfaceAlt}"
+                            TextColor="{StaticResource Navy}"
+                            Clicked="ExportTxt_Clicked"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Filtros -->
+            <HorizontalStackLayout Spacing="7">
+                <Border x:Name="AllChip"
+                        BackgroundColor="{StaticResource Navy}"
+                        StrokeThickness="0"
+                        Padding="13,7"
+                        StrokeShape="RoundRectangle 999">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FilterAll_Tapped" />
+                    </Border.GestureRecognizers>
+                    <Label x:Name="AllChipLabel"
+                           Text="Todas (0)"
+                           FontFamily="InterBold"
+                           FontSize="12"
+                           TextColor="White" />
+                </Border>
+
+                <Border x:Name="ResolvedChip"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0"
+                        Padding="13,7"
+                        StrokeShape="RoundRectangle 999">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FilterResolved_Tapped" />
+                    </Border.GestureRecognizers>
+                    <Label x:Name="ResolvedChipLabel"
+                           Text="Resueltas (0)"
+                           FontFamily="InterSemiBold"
+                           FontSize="12"
+                           TextColor="{StaticResource TextMuted}" />
+                </Border>
+
+                <Border x:Name="FalseChip"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0"
+                        Padding="13,7"
+                        StrokeShape="RoundRectangle 999">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FilterFalse_Tapped" />
+                    </Border.GestureRecognizers>
+                    <Label x:Name="FalseChipLabel"
+                           Text="Falsas alarmas (0)"
+                           FontFamily="InterSemiBold"
+                           FontSize="12"
+                           TextColor="{StaticResource TextMuted}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <!-- Lista dinámica -->
+            <VerticalStackLayout x:Name="AlertsList" Spacing="12" />
+
+            <!-- Descarga certificada -->
+            <Border BackgroundColor="{StaticResource Navy}"
+                    StrokeThickness="0"
+                    Padding="16"
+                    StrokeShape="RoundRectangle 18">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                        <Border WidthRequest="44"
+                                HeightRequest="44"
+                                BackgroundColor="#2C4A7A"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                VerticalOptions="Start">
+                            <Label Text="&#xF013;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="23"
+                                   TextColor="#93C5FD"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Text="Descarga Certificada"
+                                   FontFamily="InterBold"
+                                   FontSize="16"
+                                   TextColor="White" />
+                            <Label Text="Descargar historial certificado para aseguradora o autoridades (PDF con firma criptográfica de tiempo)."
+                                   FontSize="12"
+                                   TextColor="#CBD5E1"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Descargar Historial (PDF)"
+                            BackgroundColor="#0B5AA5"
+                            TextColor="White"
+                            FontFamily="InterSemiBold"
+                            FontSize="13"
+                            HeightRequest="46"
+                            CornerRadius="11"
+                            ContentLayout="Left,8"
+                            Clicked="ExportPdf_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons"
+                                             Glyph="&#xF090;"
+                                             Color="White"
+                                             Size="20" />
+                        </Button.ImageSource>
+                    </Button>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Estado operativo -->
+            <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                    StrokeThickness="0"
+                    Padding="13"
+                    StrokeShape="RoundRectangle 14">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="9">
+                    <Label Text="&#xF013;"
+                           FontFamily="MaterialIcons"
+                           FontSize="21"
+                           TextColor="{StaticResource GreenDark}"
+                           VerticalOptions="Center" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="1">
+                        <Label Text="Estado operacional óptimo"
+                               FontFamily="InterBold"
+                               FontSize="13"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Label x:Name="OperationalLabel"
+                               Text="Sin alertas pendientes o en riesgo actualmente."
+                               FontSize="11"
+                               TextColor="{StaticResource TextMuted}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

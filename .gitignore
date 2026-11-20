@@ -1,0 +1,14 @@
+# .NET / MAUI
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Capturas (se quedan fuera del repo)
+captures/
+cap/
+*.png.bak

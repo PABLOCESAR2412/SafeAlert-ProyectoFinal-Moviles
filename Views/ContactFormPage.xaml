@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.ContactFormPage"
+             BackgroundColor="{StaticResource Surface}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Barra superior -->
+        <Grid Grid.Row="0"
+              BackgroundColor="White"
+              Padding="14,10"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="10">
+            <Button Text="&#xE5C4;"
+                    Style="{StaticResource IconButton}"
+                    Clicked="Close_Clicked" />
+            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                <Label x:Name="TitleLabel"
+                       Text="Nuevo contacto"
+                       FontFamily="InterBold"
+                       FontSize="17"
+                       TextColor="{StaticResource Navy}" />
+                <Label Text="Red de apoyo SafeAlert"
+                       FontSize="11"
+                       TextColor="{StaticResource TextMuted}" />
+            </VerticalStackLayout>
+            <Border Grid.Column="2"
+                    BackgroundColor="{StaticResource MintTint}"
+                    StrokeThickness="0"
+                    Padding="9,4"
+                    StrokeShape="RoundRectangle 999"
+                    VerticalOptions="Center">
+                <Label Text="Cifrado"
+                       FontFamily="InterSemiBold"
+                       FontSize="10"
+                       TextColor="{StaticResource GreenDark}" />
+            </Border>
+        </Grid>
+        <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" VerticalOptions="End" />
+
+        <!-- Formulario -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="13">
+
+                <Border BackgroundColor="{StaticResource NavyTint}"
+                        Stroke="#D6E0EF"
+                        StrokeThickness="1"
+                        Padding="14"
+                        StrokeShape="RoundRectangle 16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                        <Border WidthRequest="42"
+                                HeightRequest="42"
+                                BackgroundColor="{StaticResource Navy}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                VerticalOptions="Center">
+                            <Label Text="&#xEA4D;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="22"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <Label Grid.Column="1"
+                               Text="Este contacto recibirá tu ubicación GPS en tiempo real y una notificación automática cuando actives una alerta SOS."
+                               FontSize="12"
+                               TextColor="{StaticResource Navy}"
+                               LineBreakMode="WordWrap"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Label Text="Nombre completo" Style="{StaticResource LabelBold}" />
+                <Border x:Name="NameBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xF0D3;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="NameEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="Ej. María Fernanda López"
+                               ReturnType="Next" />
+                    </Grid>
+                </Border>
+                <Label x:Name="NameError" Style="{StaticResource ErrorLabel}" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Relación" Style="{StaticResource LabelBold}" />
+                        <Border x:Name="RelationBorder" Style="{StaticResource InputBorder}" Padding="10,0">
+                            <Picker x:Name="RelationPicker"
+                                    Title="Selecciona"
+                                    TitleColor="{StaticResource TextLight}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    FontFamily="Inter"
+                                    FontSize="14"
+                                    BackgroundColor="Transparent"
+                                    HeightRequest="48" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="Prioridad" Style="{StaticResource LabelBold}" />
+                        <Border x:Name="PriorityBorder" Style="{StaticResource InputBorder}" Padding="10,0">
+                            <Picker x:Name="PriorityPicker"
+                                    Title="Selecciona"
+                                    TitleColor="{StaticResource TextLight}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    FontFamily="Inter"
+                                    FontSize="14"
+                                    BackgroundColor="Transparent"
+                                    HeightRequest="48" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+                <Label x:Name="RelationError" Style="{StaticResource ErrorLabel}" />
+
+                <Label Text="Teléfono" Style="{StaticResource LabelBold}" />
+                <Border x:Name="PhoneBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xF0D4;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="PhoneEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="+52 55 1234 5678"
+                               Keyboard="Telephone"
+                               ReturnType="Next" />
+                    </Grid>
+                </Border>
+                <Label x:Name="PhoneError" Style="{StaticResource ErrorLabel}" />
+
+                <Label Text="Acción al recibir la alerta" Style="{StaticResource LabelBold}" />
+                <Border x:Name="ActionBorder" Style="{StaticResource InputBorder}" Padding="10,0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xE7F7;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Picker x:Name="ActionPicker"
+                                Grid.Column="1"
+                                Title="Selecciona una acción"
+                                TitleColor="{StaticResource TextLight}"
+                                TextColor="{StaticResource TextPrimary}"
+                                FontFamily="Inter"
+                                FontSize="14"
+                                BackgroundColor="Transparent"
+                                HeightRequest="48" />
+                    </Grid>
+                </Border>
+
+                <Label Text="Nota de seguimiento" Style="{StaticResource LabelBold}" />
+                <Border x:Name="FooterBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xE88E;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="FooterEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="Ej. Notificación en altavoz"
+                               ReturnType="Done" />
+                    </Grid>
+                </Border>
+
+                <Border BackgroundColor="{StaticResource AmberTint}"
+                        Stroke="#FDE68A"
+                        StrokeThickness="1"
+                        Padding="12"
+                        StrokeShape="RoundRectangle 12">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Text="&#xE88E;"
+                               FontFamily="MaterialIcons"
+                               FontSize="18"
+                               TextColor="{StaticResource Amber}"
+                               VerticalOptions="Start" />
+                        <Label Grid.Column="1"
+                               Text="Recomendamos verificar el número antes de guardar. En una emergencia real, el contacto recibirá una llamada automática y tu ubicación exacta."
+                               FontSize="11"
+                               TextColor="#92400E"
+                               LineBreakMode="WordWrap" />
+                    </Grid>
+                </Border>
+
+                <Button x:Name="DeleteButton"
+                        Text="Eliminar contacto"
+                        BackgroundColor="{StaticResource RedSoft}"
+                        TextColor="{StaticResource RedDark}"
+                        FontFamily="InterSemiBold"
+                        FontSize="14"
+                        HeightRequest="48"
+                        CornerRadius="12"
+                        ContentLayout="Left,8"
+                        Clicked="Delete_Clicked"
+                        IsVisible="False"
+                        Margin="0,4,0,0">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xE92E;"
+                                         Color="{StaticResource RedDark}"
+                                         Size="20" />
+                    </Button.ImageSource>
+                </Button>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Acciones -->
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              Padding="16,10,16,14"
+              RowDefinitions="1,Auto">
+            <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" Margin="-16,-10,-16,0" VerticalOptions="Start" />
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,8,0,0">
+                <Button Text="Cancelar"
+                        Style="{StaticResource SoftButton}"
+                        WidthRequest="105"
+                        Clicked="Close_Clicked" />
+                <Button Grid.Column="1"
+                        Text="Guardar contacto"
+                        Style="{StaticResource NavyButton}"
+                        ContentLayout="Left,8"
+                        Clicked="Save_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xE161;"
+                                         Color="White"
+                                         Size="20" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

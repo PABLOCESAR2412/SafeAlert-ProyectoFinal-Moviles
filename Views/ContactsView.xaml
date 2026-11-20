@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.ContactsView"
+             BackgroundColor="{StaticResource Surface}">
+
+    <ScrollView x:Name="ContactsScroll">
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <!-- Protocolo -->
+            <Grid ColumnDefinitions="*,Auto">
+                <HorizontalStackLayout Spacing="7">
+                    <Label Text="&#xF650;"
+                           FontFamily="MaterialIcons"
+                           FontSize="19"
+                           TextColor="{StaticResource Navy}" />
+                    <Label Text="PROTOCOLO ACTIVO"
+                           Style="{StaticResource CaptionStrong}"
+                           TextColor="{StaticResource Navy}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <Border Grid.Column="1"
+                        BackgroundColor="{StaticResource MintTint}"
+                        Stroke="#A7F3D0"
+                        StrokeThickness="1"
+                        Padding="10,4"
+                        StrokeShape="RoundRectangle 999">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Sync_Tapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="5">
+                        <BoxView WidthRequest="7"
+                                 HeightRequest="7"
+                                 CornerRadius="4"
+                                 Color="{StaticResource Green}"
+                                 VerticalOptions="Center" />
+                        <Label Text="Sincronizado"
+                               FontFamily="InterSemiBold"
+                               FontSize="11"
+                               TextColor="{StaticResource GreenDark}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Encabezado -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Red de Apoyo y Contactos"
+                       Style="{StaticResource H1}"
+                       FontSize="26"
+                       LineBreakMode="WordWrap" />
+                <Label Text="Estas personas recibirán tu ubicación precisa en tiempo real y una llamada automática si activas una emergencia SOS."
+                       Style="{StaticResource Body}"
+                       FontSize="13" />
+            </VerticalStackLayout>
+
+            <Button Text="+ Agregar Contacto de Emergencia"
+                    Style="{StaticResource NavyButton}"
+                    ContentLayout="Left,10"
+                    Clicked="AddContact_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons"
+                                     Glyph="&#xEA4D;"
+                                     Color="White"
+                                     Size="22" />
+                </Button.ImageSource>
+            </Button>
+
+            <!-- Cobertura -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="9">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Label Text="&#xE9E0;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="Nivel de Cobertura"
+                               FontFamily="InterBold"
+                               FontSize="15"
+                               VerticalOptions="Center" />
+                        <Label x:Name="CoverageText"
+                               Grid.Column="2"
+                               Text="3 de 5 asignados"
+                               FontFamily="InterBold"
+                               FontSize="12"
+                               TextColor="{StaticResource Blue}"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                    <Grid x:Name="CoverageBar"
+                          ColumnDefinitions="*,*,*,*,*"
+                          ColumnSpacing="5"
+                          HeightRequest="6" />
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="7">
+                        <Label x:Name="CoverageInfoIcon"
+                               Text="&#xE88E;"
+                               FontFamily="MaterialIcons"
+                               FontSize="17"
+                               TextColor="{StaticResource Amber}"
+                               VerticalOptions="Start" />
+                        <Label x:Name="CoverageInfoLabel"
+                               Grid.Column="1"
+                               Text="Recomendamos mínimo 3 contactos para garantizar respuesta inmediata."
+                               FontSize="12"
+                               TextColor="{StaticResource TextMuted}"
+                               LineBreakMode="WordWrap" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Lista dinámica de contactos -->
+            <VerticalStackLayout x:Name="ContactsList" Spacing="12" />
+
+            <!-- Añadir contacto secundario -->
+            <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                    Stroke="#E5E7EB"
+                    StrokeThickness="1"
+                    Padding="18"
+                    StrokeShape="RoundRectangle 16">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="AddSecondary_Tapped" />
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="7" HorizontalOptions="Center">
+                    <Border WidthRequest="44"
+                            HeightRequest="44"
+                            BackgroundColor="#E5E7EB"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 22">
+                        <Label Text="&#xE7F0;"
+                               FontFamily="MaterialIcons"
+                               FontSize="23"
+                               TextColor="{StaticResource TextMuted}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="+ Añadir contacto secundario"
+                           FontFamily="InterBold"
+                           FontSize="15"
+                           TextColor="{StaticResource Navy}"
+                           HorizontalOptions="Center" />
+                    <Label Text="Familiar, vecino o colega de confianza"
+                           FontSize="12"
+                           TextColor="{StaticResource TextMuted}"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Modo de ensayo -->
+            <Border BackgroundColor="{StaticResource Navy}"
+                    StrokeThickness="0"
+                    Padding="16"
+                    StrokeShape="RoundRectangle 16">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="11">
+                    <Border WidthRequest="42"
+                            HeightRequest="42"
+                            BackgroundColor="#2C4A7A"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            VerticalOptions="Center">
+                        <Label Text="&#xF068;"
+                               FontFamily="MaterialIcons"
+                               FontSize="22"
+                               TextColor="#93C5FD"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="Modo de Ensayo"
+                               FontFamily="InterBold"
+                               FontSize="15"
+                               TextColor="White" />
+                        <Label Text="Envía un SMS simulado sin activar servicios de emergencia 911."
+                               FontSize="11"
+                               TextColor="#CBD5E1"
+                               LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2"
+                            Text="Probar"
+                            BackgroundColor="White"
+                            TextColor="{StaticResource Navy}"
+                            FontFamily="InterBold"
+                            FontSize="12"
+                            HeightRequest="38"
+                            Padding="14,0"
+                            CornerRadius="9"
+                            VerticalOptions="Center"
+                            Clicked="TestMode_Clicked" />
+                </Grid>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

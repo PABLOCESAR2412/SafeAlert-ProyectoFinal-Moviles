@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.ProfileView"
+             BackgroundColor="{StaticResource Surface}">
+
+    <ScrollView x:Name="ProfileScroll">
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <!-- Identidad -->
+            <Grid ColumnDefinitions="*,Auto">
+                <HorizontalStackLayout Spacing="7">
+                    <Label Text="&#xF650;"
+                           FontFamily="MaterialIcons"
+                           FontSize="19"
+                           TextColor="{StaticResource Navy}" />
+                    <Label Text="IDENTIDAD PROTEGIDA"
+                           Style="{StaticResource CaptionStrong}"
+                           TextColor="{StaticResource Navy}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <Border Grid.Column="1"
+                        BackgroundColor="{StaticResource BlueTint}"
+                        StrokeThickness="0"
+                        Padding="10,4"
+                        StrokeShape="RoundRectangle 999">
+                    <Label x:Name="MemberIdLabel"
+                           Text="ID #SA-8492"
+                           FontFamily="InterBold"
+                           FontSize="11"
+                           TextColor="{StaticResource Navy}" />
+                </Border>
+            </Grid>
+
+            <!-- Tarjeta de perfil -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="12">
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Grid WidthRequest="66" HeightRequest="66" VerticalOptions="Start">
+                            <Border WidthRequest="64"
+                                    HeightRequest="64"
+                                    BackgroundColor="{StaticResource Navy}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 32">
+                                <Label x:Name="ProfileAvatarLabel"
+                                       Text="ER"
+                                       FontFamily="InterBold"
+                                       FontSize="21"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <Border WidthRequest="23"
+                                    HeightRequest="23"
+                                    BackgroundColor="{StaticResource Blue}"
+                                    Stroke="White"
+                                    StrokeThickness="2"
+                                    StrokeShape="RoundRectangle 12"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="End"
+                                    Margin="0,0,-1,-1">
+                                <Label Text="&#xEF76;"
+                                       FontFamily="MaterialIcons"
+                                       FontSize="13"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label x:Name="ProfileNameLabel"
+                                   Text="Elena Rosales Martínez"
+                                   FontFamily="InterBold"
+                                   FontSize="18"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   LineBreakMode="WordWrap" />
+                            <Label x:Name="ProfilePhoneLabel"
+                                   Text="+52 55 4321 8765"
+                                   FontSize="12"
+                                   TextColor="{StaticResource TextMuted}" />
+                            <Label x:Name="ProfileEmailLabel"
+                                   Text="elena.rosales@safealert.app"
+                                   FontSize="11"
+                                   TextColor="{StaticResource Blue}"
+                                   LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+
+                        <Button Grid.Column="2"
+                                Text="&#xF097;"
+                                Style="{StaticResource IconButton}"
+                                TextColor="{StaticResource Navy}"
+                                BackgroundColor="{StaticResource SurfaceAlt}"
+                                Clicked="EditProfile_Clicked"
+                                VerticalOptions="Start" />
+                    </Grid>
+
+                    <Border BackgroundColor="{StaticResource Navy}"
+                            StrokeThickness="0"
+                            Padding="12,9"
+                            StrokeShape="RoundRectangle 12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ProCard_Tapped" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                            <Border WidthRequest="32"
+                                    HeightRequest="32"
+                                    BackgroundColor="#2C4A7A"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 9">
+                                <Label Text="&#xF686;"
+                                       FontFamily="MaterialIcons"
+                                       FontSize="18"
+                                       TextColor="#93C5FD"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                <Label Text="SAFEALERT PRO ACTIVO"
+                                       FontFamily="InterBold"
+                                       FontSize="10"
+                                       CharacterSpacing="0.6"
+                                       TextColor="#93C5FD" />
+                                <Label Text="Protección 24/7 Monitoreada"
+                                       FontFamily="InterMedium"
+                                       FontSize="12"
+                                       TextColor="White" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#xEF76;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="#93C5FD"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Ficha médica -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="10">
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Label Text="&#xF109;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Red}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="Ficha Médica Vital"
+                               FontFamily="InterBold"
+                               FontSize="16"
+                               VerticalOptions="Center" />
+                        <Border Grid.Column="2"
+                                BackgroundColor="{StaticResource RedTint}"
+                                StrokeThickness="0"
+                                Padding="8,3"
+                                StrokeShape="RoundRectangle 999">
+                            <Label Text="EMERGENCIA"
+                                   FontFamily="InterBold"
+                                   FontSize="9"
+                                   TextColor="{StaticResource RedDark}" />
+                        </Border>
+                    </Grid>
+                    <Label Text="Visible a rescatistas en modo pánico"
+                           FontSize="11"
+                           TextColor="{StaticResource TextMuted}" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="9">
+                        <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                                StrokeThickness="0"
+                                Padding="11"
+                                StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="GRUPO SANGUÍNEO"
+                                       FontFamily="InterBold"
+                                       FontSize="9"
+                                       TextColor="{StaticResource TextSoft}" />
+                                <Label x:Name="BloodTypeLabel"
+                                       Text="O+"
+                                       FontFamily="InterExtraBold"
+                                       FontSize="20"
+                                       TextColor="{StaticResource RedDark}" />
+                                <Label x:Name="BloodTypeDetailLabel"
+                                       Text="O+ Positivo"
+                                       FontSize="10"
+                                       TextColor="{StaticResource TextMuted}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource SurfaceAlt}"
+                                StrokeThickness="0"
+                                Padding="11"
+                                StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="ALERGIAS CRÍTICAS"
+                                       FontFamily="InterBold"
+                                       FontSize="9"
+                                       TextColor="{StaticResource TextSoft}" />
+                                <Label x:Name="AllergiesLabel"
+                                       Text="Penicilina"
+                                       FontFamily="InterBold"
+                                       FontSize="15"
+                                       TextColor="{StaticResource RedDark}"
+                                       LineBreakMode="WordWrap" />
+                                <Label Text="Verificar antes de medicar"
+                                       FontSize="10"
+                                       TextColor="{StaticResource TextMuted}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                            StrokeThickness="0"
+                            Padding="10"
+                            StrokeShape="RoundRectangle 10">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                            <Border WidthRequest="32"
+                                    HeightRequest="32"
+                                    BackgroundColor="White"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 16">
+                                <Label Text="&#xE9E0;"
+                                       FontFamily="MaterialIcons"
+                                       FontSize="17"
+                                       TextColor="{StaticResource Blue}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                <Label Text="Contacto Médico Principal"
+                                       FontSize="10"
+                                       TextColor="{StaticResource TextMuted}" />
+                                <Label x:Name="DoctorNameLabel"
+                                       Text="Dr. Fernando Torres"
+                                       FontFamily="InterSemiBold"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="2"
+                                    Text="&#xF0D4;"
+                                    Style="{StaticResource IconButton}"
+                                    TextColor="{StaticResource Blue}"
+                                    BackgroundColor="{StaticResource BlueTint}"
+                                    Clicked="CallDoctor_Clicked" />
+                        </Grid>
+                    </Border>
+
+                    <Button Text="Editar ficha médica de emergencia"
+                            Style="{StaticResource GhostButton}"
+                            ContentLayout="Left,6"
+                            HorizontalOptions="Start"
+                            Clicked="EditMedical_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons"
+                                             Glyph="&#xE745;"
+                                             Color="{StaticResource Blue}"
+                                             Size="18" />
+                        </Button.ImageSource>
+                    </Button>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Protocolos -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="10">
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Text="&#xE9E0;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Protocolos de Activación"
+                                   FontFamily="InterBold"
+                                   FontSize="16" />
+                            <Label Text="Respuestas automáticas e inmediatas"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Botón SOS -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Label Text="&#xE899;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Botón SOS en pantalla de bloqueo"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Acceso táctil rápido sin desbloquear"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="SosLockSwitch"
+                                Grid.Column="2"
+                                Style="{StaticResource SwitchStyle}"
+                                Toggled="Setting_Toggled"
+                                VerticalOptions="Center" />
+                    </Grid>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <!-- Ubicación -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Label Text="&#xE55C;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Ubicación en segundo plano"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Transmisión en vivo durante el evento"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="BackgroundSwitch"
+                                Grid.Column="2"
+                                Style="{StaticResource SwitchStyle}"
+                                Toggled="Setting_Toggled"
+                                VerticalOptions="Center" />
+                    </Grid>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <!-- Sirena -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Label Text="&#xE04F;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <HorizontalStackLayout Spacing="6">
+                                <Label Text="Alerta sonora (Sirena)"
+                                       FontFamily="InterSemiBold"
+                                       FontSize="13"
+                                       VerticalOptions="Center" />
+                                <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                                        StrokeThickness="0"
+                                        Padding="7,2"
+                                        StrokeShape="RoundRectangle 6">
+                                    <Label Text="Silencioso"
+                                           FontFamily="InterMedium"
+                                           FontSize="9"
+                                           TextColor="{StaticResource TextMuted}" />
+                                </Border>
+                            </HorizontalStackLayout>
+                            <Label Text="Despacho encubierto sin emitir ruidos"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="SirenSwitch"
+                                Grid.Column="2"
+                                Style="{StaticResource SwitchStyle}"
+                                Toggled="Setting_Toggled"
+                                VerticalOptions="Center" />
+                    </Grid>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <!-- Sacudida -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Label Text="&#xF2CB;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Detección de sacudidas SOS"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Acelerómetro: agita el teléfono para alertar"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="ShakeSwitch"
+                                Grid.Column="2"
+                                Style="{StaticResource SwitchStyle}"
+                                Toggled="ShakeSwitch_Toggled"
+                                VerticalOptions="Center" />
+                    </Grid>
+
+                    <Border BackgroundColor="{StaticResource BlueTint}"
+                            StrokeThickness="0"
+                            Padding="10,7"
+                            StrokeShape="RoundRectangle 9">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TestShake_Tapped" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="7">
+                            <Label Text="&#xE51E;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="17"
+                                   TextColor="{StaticResource Blue}" />
+                            <Label Grid.Column="1"
+                                   Text="Probar detección de sacudida (simulación)"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="11"
+                                   TextColor="{StaticResource Navy}"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="2"
+                                   Text="&#xE5CC;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="18"
+                                   TextColor="{StaticResource Navy}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <!-- Triple pulsación -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TripleTap_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Label Text="&#xE913;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Triple pulsación en botón físico"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Configurado • Botón de encendido"
+                                   FontSize="10"
+                                   TextColor="{StaticResource Blue}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xE5CC;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <!-- Caídas -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="FallDetection_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Label Text="&#xE6DA;"
+                               FontFamily="MaterialIcons"
+                               FontSize="21"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                            <Label Text="Detección de caídas e impactos"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Sensibilidad media (Acelerómetro)"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xE5CC;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Dispositivos y privacidad -->
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="11">
+                    <Label Text="Dispositivos y Privacidad"
+                           FontFamily="InterBold"
+                           FontSize="16"
+                           Margin="0,0,0,1" />
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Devices_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
+                                BackgroundColor="{StaticResource SurfaceAlt}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10">
+                            <Label Text="&#xE334;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource Navy}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                            <Label Text="Dispositivos vinculados"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Smartwatch, Llavero SOS (2 activos)"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xE5CC;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Privacy_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
+                                BackgroundColor="{StaticResource SurfaceAlt}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10">
+                            <Label Text="&#xF0DC;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource Navy}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                            <Label Text="Privacidad y Términos Legales"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label Text="Cifrado de extremo a extremo activo"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xE5CC;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Cerrar Sesión Segura"
+                    BackgroundColor="{StaticResource RedSoft}"
+                    TextColor="{StaticResource RedDark}"
+                    FontFamily="InterSemiBold"
+                    FontSize="14"
+                    HeightRequest="48"
+                    CornerRadius="12"
+                    ContentLayout="Left,8"
+                    Clicked="Logout_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons"
+                                     Glyph="&#xE9BA;"
+                                     Color="{StaticResource RedDark}"
+                                     Size="20" />
+                </Button.ImageSource>
+            </Button>
+
+            <Label x:Name="VersionLabel"
+                   Text="SafeAlert v4.12.0 • Dispatch Engine 99.98% SLA"
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource TextSoft}"
+                   FontSize="10"
+                   Margin="0,0,0,4" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

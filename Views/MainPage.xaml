@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.MainPage"
+             Title="SafeAlert"
+             BackgroundColor="{StaticResource Surface}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Encabezado compartido -->
+        <Grid Grid.Row="0"
+              BackgroundColor="White"
+              Padding="16,10,16,9"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="10">
+
+            <Grid WidthRequest="40" HeightRequest="40">
+                <Border BackgroundColor="{StaticResource Navy}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                    <Label Text="&#xE9E0;"
+                           FontFamily="MaterialIcons"
+                           FontSize="23"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+                <Border WidthRequest="15"
+                        HeightRequest="15"
+                        BackgroundColor="White"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Margin="0,0,-2,-2">
+                    <Label Text="&#xEF76;"
+                           FontFamily="MaterialIcons"
+                           FontSize="10"
+                           TextColor="{StaticResource Blue}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                <Label Text="SafeAlert"
+                       FontFamily="InterExtraBold"
+                       FontSize="19"
+                       TextColor="{StaticResource Navy}" />
+                <HorizontalStackLayout Spacing="5">
+                    <BoxView WidthRequest="6"
+                             HeightRequest="6"
+                             CornerRadius="3"
+                             Color="{StaticResource Green}"
+                             VerticalOptions="Center" />
+                    <Label Text="En línea / GPS Activo"
+                           FontFamily="InterMedium"
+                           FontSize="11"
+                           TextColor="{StaticResource TextMuted}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <Border x:Name="HeaderAvatar"
+                    Grid.Column="2"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    BackgroundColor="{StaticResource NavyTint}"
+                    Stroke="{StaticResource Line}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="HeaderAvatar_Tapped" />
+                </Border.GestureRecognizers>
+                <Label x:Name="HeaderAvatarLabel"
+                       Text="ER"
+                       FontFamily="InterBold"
+                       FontSize="13"
+                       TextColor="{StaticResource Navy}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+        </Grid>
+        <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" VerticalOptions="End" />
+
+        <!-- Contenido de la pestaña -->
+        <ContentView x:Name="ContentHost" Grid.Row="1" />
+
+        <!-- Navegación inferior personalizada -->
+        <Grid Grid.Row="2" BackgroundColor="White" RowDefinitions="1,Auto">
+            <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" />
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" Padding="4,5,4,7">
+
+                <VerticalStackLayout x:Name="Tab0" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Tab_Tapped" CommandParameter="0" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BoxView x:Name="Indicator0" WidthRequest="22" HeightRequest="3" CornerRadius="2"
+                             Color="Transparent" HorizontalOptions="Center" Margin="0,0,0,2" />
+                    <Label x:Name="Icon0" Text="&#xE9B2;"
+                           FontFamily="MaterialIcons" FontSize="21"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                    <Label x:Name="TabLabel0" Text="Inicio" FontFamily="InterMedium" FontSize="10"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="Tab1" Grid.Column="1" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Tab_Tapped" CommandParameter="1" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BoxView x:Name="Indicator1" WidthRequest="22" HeightRequest="3" CornerRadius="2"
+                             Color="Transparent" HorizontalOptions="Center" Margin="0,0,0,2" />
+                    <Label x:Name="Icon1" Text="&#xF083;"
+                           FontFamily="MaterialIcons" FontSize="21"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                    <Label x:Name="TabLabel1" Text="Alerta" FontFamily="InterMedium" FontSize="10"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="Tab2" Grid.Column="2" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Tab_Tapped" CommandParameter="2" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BoxView x:Name="Indicator2" WidthRequest="22" HeightRequest="3" CornerRadius="2"
+                             Color="Transparent" HorizontalOptions="Center" Margin="0,0,0,2" />
+                    <Label x:Name="Icon2" Text="&#xEA21;"
+                           FontFamily="MaterialIcons" FontSize="21"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                    <Label x:Name="TabLabel2" Text="Contactos" FontFamily="InterMedium" FontSize="10"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="Tab3" Grid.Column="3" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Tab_Tapped" CommandParameter="3" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BoxView x:Name="Indicator3" WidthRequest="22" HeightRequest="3" CornerRadius="2"
+                             Color="Transparent" HorizontalOptions="Center" Margin="0,0,0,2" />
+                    <Label x:Name="Icon3" Text="&#xE8B3;"
+                           FontFamily="MaterialIcons" FontSize="21"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                    <Label x:Name="TabLabel3" Text="Historial" FontFamily="InterMedium" FontSize="10"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="Tab4" Grid.Column="4" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Tab_Tapped" CommandParameter="4" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <BoxView x:Name="Indicator4" WidthRequest="22" HeightRequest="3" CornerRadius="2"
+                             Color="Transparent" HorizontalOptions="Center" Margin="0,0,0,2" />
+                    <Label x:Name="Icon4" Text="&#xF02E;"
+                           FontFamily="MaterialIcons" FontSize="21"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                    <Label x:Name="TabLabel4" Text="Perfil" FontFamily="InterMedium" FontSize="10"
+                           TextColor="{StaticResource TextSoft}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

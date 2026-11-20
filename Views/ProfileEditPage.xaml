@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SafeAlert.Helpers"
+             x:Class="SafeAlert.Views.ProfileEditPage"
+             BackgroundColor="{StaticResource Surface}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Barra superior -->
+        <Grid Grid.Row="0"
+              BackgroundColor="White"
+              Padding="14,10"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="10">
+            <Button Text="&#xE5C4;"
+                    Style="{StaticResource IconButton}"
+                    Clicked="Close_Clicked" />
+            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                <Label Text="Editar perfil"
+                       FontFamily="InterBold"
+                       FontSize="17"
+                       TextColor="{StaticResource Navy}" />
+                <Label Text="Datos personales y ficha médica"
+                       FontSize="11"
+                       TextColor="{StaticResource TextMuted}" />
+            </VerticalStackLayout>
+            <Border Grid.Column="2"
+                    BackgroundColor="{StaticResource BlueTint}"
+                    StrokeThickness="0"
+                    Padding="9,4"
+                    StrokeShape="RoundRectangle 999"
+                    VerticalOptions="Center">
+                <Label x:Name="MemberChipLabel"
+                       Text="SA-0000"
+                       FontFamily="InterBold"
+                       FontSize="10"
+                       TextColor="{StaticResource Navy}" />
+            </Border>
+        </Grid>
+        <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" VerticalOptions="End" />
+
+        <ScrollView x:Name="FormScroll" Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="13">
+
+                <Border BackgroundColor="{StaticResource NavyTint}"
+                        Stroke="#D6E0EF"
+                        StrokeThickness="1"
+                        Padding="13"
+                        StrokeShape="RoundRectangle 14">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="9">
+                        <Label Text="&#xE32A;"
+                               FontFamily="MaterialIcons"
+                               FontSize="22"
+                               TextColor="{StaticResource Navy}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="Tu identidad y ficha médica están cifradas. La información médica solo se comparte con rescatistas cuando se activa una alerta."
+                               FontSize="11"
+                               TextColor="{StaticResource Navy}"
+                               LineBreakMode="WordWrap" />
+                    </Grid>
+                </Border>
+
+                <!-- Datos personales -->
+                <Label Text="Datos personales"
+                       FontFamily="InterBold"
+                       FontSize="17"
+                       TextColor="{StaticResource TextPrimary}"
+                       Margin="0,2,0,0" />
+
+                <Label Text="Nombre completo" Style="{StaticResource LabelBold}" />
+                <Border x:Name="NameBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xF0D3;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="NameEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="Nombre y apellido"
+                               ReturnType="Next" />
+                    </Grid>
+                </Border>
+                <Label x:Name="NameError" Style="{StaticResource ErrorLabel}" />
+
+                <Label Text="Teléfono" Style="{StaticResource LabelBold}" />
+                <Border x:Name="PhoneBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xF0D4;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="PhoneEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="+52 55 1234 5678"
+                               Keyboard="Telephone"
+                               ReturnType="Next" />
+                    </Grid>
+                </Border>
+                <Label x:Name="PhoneError" Style="{StaticResource ErrorLabel}" />
+
+                <Label Text="Correo electrónico" Style="{StaticResource LabelBold}" />
+                <Border x:Name="EmailBorder" Style="{StaticResource InputBorder}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="&#xF8D1;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                        <Entry x:Name="EmailEntry"
+                               Grid.Column="1"
+                               Style="{StaticResource InputEntry}"
+                               Placeholder="tu@correo.com"
+                               Keyboard="Email"
+                               ReturnType="Done" />
+                    </Grid>
+                </Border>
+                <Label x:Name="EmailError" Style="{StaticResource ErrorLabel}" />
+
+                <!-- Ficha médica -->
+                <VerticalStackLayout x:Name="MedicalSection" Spacing="13" Margin="0,4,0,0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Label Text="Ficha médica vital"
+                               FontFamily="InterBold"
+                               FontSize="17"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Border Grid.Column="2"
+                                BackgroundColor="{StaticResource RedTint}"
+                                StrokeThickness="0"
+                                Padding="8,3"
+                                StrokeShape="RoundRectangle 999">
+                            <Label Text="EMERGENCIA"
+                                   FontFamily="InterBold"
+                                   FontSize="9"
+                                   TextColor="{StaticResource RedDark}" />
+                        </Border>
+                    </Grid>
+
+                    <Label Text="Tipo de sangre" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="BloodBorder" Style="{StaticResource InputBorder}" Padding="10,0">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xEFE4;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource RedDark}"
+                                   VerticalOptions="Center" />
+                            <Picker x:Name="BloodPicker"
+                                    Grid.Column="1"
+                                    Title="Selecciona tu tipo de sangre"
+                                    TitleColor="{StaticResource TextLight}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    FontFamily="Inter"
+                                    FontSize="14"
+                                    BackgroundColor="Transparent"
+                                    HeightRequest="48" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="Alergias críticas" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="AllergiesBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xE64E;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="AllergiesEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="Ej. Penicilina, mariscos, ninguna"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="Médico principal" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="DoctorBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xE1D5;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="DoctorEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="Ej. Dr. Fernando Torres"
+                                   ReturnType="Next" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="Teléfono del médico" Style="{StaticResource LabelBold}" />
+                    <Border x:Name="DoctorPhoneBorder" Style="{StaticResource InputBorder}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Text="&#xF0D4;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource TextSoft}"
+                                   VerticalOptions="Center" />
+                            <Entry x:Name="DoctorPhoneEntry"
+                                   Grid.Column="1"
+                                   Style="{StaticResource InputEntry}"
+                                   Placeholder="+52 55 1122 3344"
+                                   Keyboard="Telephone"
+                                   ReturnType="Done" />
+                        </Grid>
+                    </Border>
+                    <Label x:Name="DoctorPhoneError" Style="{StaticResource ErrorLabel}" />
+
+                    <Border BackgroundColor="{StaticResource RedSoft}"
+                            Stroke="#FECACA"
+                            StrokeThickness="1"
+                            Padding="12"
+                            StrokeShape="RoundRectangle 12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Text="&#xEBED;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="19"
+                                   TextColor="{StaticResource RedDark}"
+                                   VerticalOptions="Start" />
+                            <Label Grid.Column="1"
+                                   Text="Esta información aparecerá en la pantalla de emergencia y se enviará a los servicios médicos cuando actives el SOS."
+                                   FontSize="11"
+                                   TextColor="#991B1B"
+                                   LineBreakMode="WordWrap" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Acciones -->
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              Padding="16,10,16,14"
+              RowDefinitions="1,Auto">
+            <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource Line}" Margin="-16,-10,-16,0" VerticalOptions="Start" />
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,8,0,0">
+                <Button Text="Cancelar"
+                        Style="{StaticResource SoftButton}"
+                        WidthRequest="105"
+                        Clicked="Close_Clicked" />
+                <Button Grid.Column="1"
+                        Text="Guardar cambios"
+                        Style="{StaticResource NavyButton}"
+                        ContentLayout="Left,8"
+                        Clicked="Save_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xE161;"
+                                         Color="White"
+                                         Size="20" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
