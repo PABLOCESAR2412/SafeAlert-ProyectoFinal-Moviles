@@ -27,18 +27,18 @@ public static class BiometricService
                 return false;
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
-        {
-            var biometricManager = activity.GetSystemService(Android.Content.Context.BiometricService)
-                as Android.Hardware.Biometrics.BiometricManager;
+            {
+                var biometricManager = activity.GetSystemService(Android.Content.Context.BiometricService)
+                    as Android.Hardware.Biometrics.BiometricManager;
 
-            // 255 = BIOMETRIC_WEAK: huella, rostro o iris ya enrolados.
-            return biometricManager?.CanAuthenticate(255) == 0;
-        }
+                // 255 = BIOMETRIC_WEAK: huella, rostro o iris ya enrolados.
+                return biometricManager?.CanAuthenticate(255) == 0;
+            }
 
-        var keyguard = activity.GetSystemService(Android.Content.Context.KeyguardService)
-            as Android.App.KeyguardManager;
+            var keyguard = activity.GetSystemService(Android.Content.Context.KeyguardService)
+                as Android.App.KeyguardManager;
 
-        return keyguard?.IsDeviceSecure == true;
+            return keyguard?.IsDeviceSecure == true;
         }
         catch
         {
