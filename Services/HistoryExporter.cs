@@ -50,7 +50,7 @@ public static class HistoryExporter
 
         builder.AppendLine("============================================================");
         builder.AppendLine("Reporte generado automáticamente por SafeAlert.");
-        builder.AppendLine("Cifrado de extremo a extremo • Protección 24/7");
+        builder.AppendLine("Datos locales - Sin servidor remoto");
         builder.AppendLine("============================================================");
 
         File.WriteAllText(path, builder.ToString(), Encoding.UTF8);
@@ -101,7 +101,7 @@ public static class HistoryExporter
             SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", rawLines))));
         rawLines.Add($"Firma digital SHA-256: {fingerprint}");
         rawLines.Add("Reporte generado automaticamente por SafeAlert.");
-        rawLines.Add("Cifrado de extremo a extremo - Proteccion 24/7");
+        rawLines.Add("Datos locales - Sin servidor remoto");
 
         var lines = rawLines.SelectMany(line => Wrap(line, 92)).ToList();
         if (lines.Count == 0)

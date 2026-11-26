@@ -22,7 +22,7 @@
                        FontSize="17"
                        TextColor="{StaticResource Navy}" />
                 <Label x:Name="HeaderSubtitle"
-                       Text="Reporte cifrado y trazable"
+                       Text="Reporte local y trazable"
                        FontSize="11"
                        TextColor="{StaticResource TextMuted}" />
             </VerticalStackLayout>
@@ -128,7 +128,7 @@
                                        TextColor="{StaticResource Red}" />
                                 <Label x:Name="MapAddressLabel"
                                        Grid.Column="1"
-                                       Text="Calle Liverpool 88, Col. Juárez"
+                                       Text="Av. Amazonas N34-12 y Naciones Unidas, Quito"
                                        FontSize="11"
                                        TextColor="{StaticResource Navy}"
                                        LineBreakMode="TailTruncation" />
@@ -144,13 +144,13 @@
                                Style="{StaticResource CaptionStrong}"
                                TextColor="{StaticResource TextMuted}" />
                         <Label x:Name="AddressLabel"
-                               Text="Calle Liverpool 88, Col. Juárez"
+                               Text="Av. Amazonas N34-12 y Naciones Unidas, Quito"
                                FontFamily="InterSemiBold"
                                FontSize="14"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap" />
                         <Label x:Name="CoordinatesLabel"
-                               Text="Lat: 19.4270, Lon: -99.1676"
+                               Text="Lat: -0.1814, Lon: -78.4755"
                                FontSize="11"
                                TextColor="{StaticResource TextMuted}" />
                     </VerticalStackLayout>
@@ -187,7 +187,7 @@
                                        FontSize="11"
                                        TextColor="{StaticResource TextMuted}" />
                                 <Label x:Name="ContactsLabel"
-                                       Text="3 contactos notificados en tiempo real"
+                                       Text="Contactos incluidos en el envío"
                                        FontFamily="InterSemiBold"
                                        FontSize="12" />
                             </VerticalStackLayout>
@@ -283,7 +283,7 @@
                         HeightRequest="42"
                         Clicked="FalseAlarm_Clicked" />
                 <Label x:Name="ClosedLabel"
-                       Text="Este evento ya está cerrado. El reporte se conserva en tu historial cifrado."
+                       Text="Este evento ya está cerrado. El reporte se conserva en tu historial local."
                        FontSize="11"
                        TextColor="{StaticResource TextMuted}"
                        HorizontalTextAlignment="Center"

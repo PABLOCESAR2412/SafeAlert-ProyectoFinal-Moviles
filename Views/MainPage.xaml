@@ -54,7 +54,7 @@
                              CornerRadius="3"
                              Color="{StaticResource Green}"
                              VerticalOptions="Center" />
-                    <Label Text="En línea / GPS Activo"
+                    <Label Text="Modo local · GPS"
                            FontFamily="InterMedium"
                            FontSize="11"
                            TextColor="{StaticResource TextMuted}" />
@@ -85,6 +85,48 @@
 
         <!-- Contenido de la pestaña -->
         <ContentView x:Name="ContentHost" Grid.Row="1" />
+
+        <!-- Aviso no intrusivo de actualización -->
+        <Border x:Name="UpdateBanner"
+                Grid.RowSpan="3"
+                IsVisible="False"
+                VerticalOptions="End"
+                Margin="16,0,16,88"
+                Padding="12,10"
+                BackgroundColor="{StaticResource Navy}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 14">
+            <Border.Shadow>
+                <Shadow Brush="#111827" Offset="0,4" Radius="12" Opacity="0.25" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Text="&#xF090;"
+                       FontFamily="MaterialIcons"
+                       FontSize="22"
+                       TextColor="White"
+                       VerticalOptions="Center" />
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                    <Label Text="Actualización disponible"
+                           FontFamily="InterBold"
+                           FontSize="13"
+                           TextColor="White" />
+                    <Label x:Name="UpdateBannerText"
+                           Text="Hay una versión nueva de SafeAlert."
+                           FontSize="11"
+                           TextColor="#DBEAFE" />
+                </VerticalStackLayout>
+                <Button Grid.Column="2"
+                        Text="Ver"
+                        FontFamily="InterBold"
+                        FontSize="12"
+                        TextColor="{StaticResource Navy}"
+                        BackgroundColor="White"
+                        CornerRadius="8"
+                        HeightRequest="32"
+                        Padding="12,0"
+                        Clicked="UpdateBanner_Clicked" />
+            </Grid>
+        </Border>
 
         <!-- Navegación inferior personalizada -->
         <Grid Grid.Row="2" BackgroundColor="White" RowDefinitions="1,Auto">

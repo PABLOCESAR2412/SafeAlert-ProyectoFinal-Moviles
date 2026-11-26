@@ -92,6 +92,30 @@ public static class AppSession
     public static bool TryLoginDemo(out string error) =>
         TryLogin("elena.rosales@safealert.app", "123456", out error);
 
+    /// <summary>
+    /// Acceso rápido tras una autenticación biométrica correcta. Solo reabre la
+    /// última cuenta usada en este dispositivo; no acepta credenciales nuevas.
+    /// </summary>
+    public static bool TryBiometricLogin(out string error)
+    {
+        error = string.Empty;
+
+        var email = DataStore.Data.LastEmail;
+        var user = DataStore.Data.Users.FirstOrDefault(account =>
+            account.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+        if (user == null)
+        {
+            error = "Primero inicia sesión con tu contraseña para habilitar el acceso biométrico.";
+            return false;
+        }
+
+        Account = user;
+        RememberSession(user.Email);
+        DataStore.Save();
+        return true;
+    }
+
     public static bool TryRegister(
         string fullName,
         string phone,

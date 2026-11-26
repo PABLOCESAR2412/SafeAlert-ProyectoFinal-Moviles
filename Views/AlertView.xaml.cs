@@ -1,3 +1,6 @@
+using System.Globalization;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Controls.Shapes;
 using SafeAlert.Helpers;
 using SafeAlert.Models;
@@ -80,6 +83,63 @@ public partial class AlertView : ContentView, IRefreshable
         AddressLabel.Text = LocationService.Address;
         CoordinatesLabel.Text = LocationService.CoordinatesText;
         NearbyLabel.Text = $"• {LocationService.Nearby}";
+        UpdateMapImage();
+    }
+
+    private async void UpdateMapImage()
+    {
+        try
+        {
+            var lat = LocationService.Latitude.ToString("0.000000", CultureInfo.InvariantCulture);
+            var lon = LocationService.Longitude.ToString("0.000000", CultureInfo.InvariantCulture);
+            var url = $"https://staticmap.openstreetmap.de/staticmap.php?center={lat},{lon}&zoom=16&size=640x380&maptype=mapnik&markers={lat},{lon},red-pushpin";
+
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+            using var response = await client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return;
+
+            MapImage.Source = ImageSource.FromUri(new Uri(url));
+        }
+        catch
+        {
+            // Si el mapa en línea no está disponible se conserva la imagen local.
+        }
+    }
+
+    private async void CallEmergency_Tapped(object sender, TappedEventArgs e)
+    {
+        var call = await Ui.Confirm(
+            "Llamar al 911",
+            "Se abrirá el marcador del teléfono con el número 911. La llamada la confirmas tú.",
+            "Abrir marcador",
+            "Cancelar");
+
+        if (!call)
+            return;
+
+        try
+        {
+            PhoneDialer.Default.Open("911");
+        }
+        catch
+        {
+            await Ui.Alert("Teléfono", "No se pudo abrir el marcador en este dispositivo.", "Aceptar");
+        }
+    }
+
+    private async void OpenMap_Tapped(object sender, TappedEventArgs e)
+    {
+        try
+        {
+            await Launcher.Default.OpenAsync(new Uri(
+                SharingService.BuildLocationLink(LocationService.Latitude, LocationService.Longitude)));
+        }
+        catch
+        {
+            await Ui.Alert("Mapa", "No se pudo abrir la aplicación de mapas.", "Aceptar");
+        }
     }
 
     private void BuildRecipientAvatars()
@@ -166,7 +226,7 @@ public partial class AlertView : ContentView, IRefreshable
 
         RecipientsSubtitle.Text = contacts.Count == 0
             ? "Agrega contactos para compartir tu ubicación"
-            : "SMS de alerta, llamada automática y push";
+            : "WhatsApp con ubicación y SMS de respaldo";
     }
 
     private async void MapRecenter_Tapped(object sender, TappedEventArgs e)
@@ -186,7 +246,7 @@ public partial class AlertView : ContentView, IRefreshable
             {
                 await Ui.Alert(
                     "Ubicación de demostración",
-                    "No se pudo obtener el GPS del equipo. Se mantiene la ubicación de demostración (Paseo de la Reforma, CDMX) para probar la alerta.",
+                    "No se pudo obtener el GPS del equipo. Se mantiene la ubicación de demostración (Av. Amazonas, Quito) para probar la alerta.",
                     "Entendido");
             }
             else
@@ -254,18 +314,56 @@ public partial class AlertView : ContentView, IRefreshable
 
         try
         {
+            var granted = await PermissionService.EnsureLocationAsync();
+            if (granted)
+                await LocationService.RefreshAsync();
+            else
+                await Ui.Alert(
+                    "Permiso de ubicación",
+                    "Sin permiso de ubicación se enviará la última posición conocida. Puedes concederlo desde Configuración de Android.",
+                    "Entendido");
+
             var alert = AlertService.Send(
                 _type,
                 message,
                 LocationService.Address,
                 LocationService.Latitude,
                 LocationService.Longitude,
-                notes: "Alerta emitida desde el módulo de envío con mapa y confirmación de ubicación.");
+                notes: "Alerta emitida desde el módulo de envío con mapa y ubicación compartida.");
 
-            await Ui.Alert(
-                "Alerta enviada",
-                $"Se notificó a {alert.NotifiedContacts} contacto(s) de confianza y a la central 911.\n\nSe compartió tu ubicación GPS en tiempo real.",
-                "Ver historial");
+            var account = AppSession.Account!;
+            var share = await SharingService.DispatchAsync(
+                account,
+                message,
+                LocationService.Latitude,
+                LocationService.Longitude);
+
+            var summary = share.WhatsAppSent
+                ? $"WhatsApp abierto con {share.PrimaryName} y tu ubicación.\nConfirma el envío dentro de WhatsApp."
+                : $"{share.Error}\nSe preparará un SMS para tus contactos.";
+
+            if (share.HasPendingSms)
+            {
+                var sendSms = await Ui.Confirm(
+                    "Alerta registrada",
+                    $"{summary}\n\n¿Enviar SMS a {share.SmsPending.Count} contacto(s) más con el mensaje de ayuda?",
+                    "Enviar SMS",
+                    "Ahora no");
+
+                if (sendSms)
+                {
+                    var composed = await SharingService.ComposeSmsAsync(share.SmsPending, message);
+                    if (!composed)
+                        await Ui.Alert("SMS", "No se pudo abrir la aplicación de mensajes.", "Aceptar");
+                }
+            }
+            else
+            {
+                await Ui.Alert(
+                    "Alerta registrada",
+                    $"{summary}\n\nUbicación incluida: {LocationService.Address}.",
+                    "Aceptar");
+            }
 
             _messageIsDefault = true;
             _type = EmergencyType.Panic;

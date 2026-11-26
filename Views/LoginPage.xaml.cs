@@ -170,7 +170,7 @@ public partial class LoginPage : ContentPage
 
         await DisplayAlert(
             "Cuenta creada",
-            $"Bienvenido/a, {AppSession.Account?.Profile.FirstName}. Tu cuenta quedó protegida con cifrado local.",
+            $"Bienvenido/a, {AppSession.Account?.Profile.FirstName}. Tu cuenta quedó guardada en este dispositivo.",
             "Continuar");
 
         OpenMain();
@@ -203,13 +203,35 @@ public partial class LoginPage : ContentPage
 
     private async void BiometricButton_Clicked(object sender, EventArgs e)
     {
-        var verify = await DisplayAlert(
-            "Ingreso rápido",
-            "Se solicitará la verificación biométrica del dispositivo. En esta demostración se validará con la cuenta de prueba.",
-            "Verificar",
+        if (BiometricService.IsAvailable())
+        {
+            var authenticated = await BiometricService.AuthenticateAsync(
+                "Confirma tu huella para ingresar a SafeAlert");
+
+            if (!authenticated)
+            {
+                await DisplayAlert(
+                    "Biometría",
+                    "No se pudo verificar tu identidad. Puedes ingresar con tu contraseña.",
+                    "Aceptar");
+                return;
+            }
+
+            if (AppSession.TryBiometricLogin(out var biometricError))
+                OpenMain();
+            else
+                await DisplayAlert("Ingreso rápido", biometricError, "Aceptar");
+
+            return;
+        }
+
+        var useDemo = await DisplayAlert(
+            "Ingreso rápido no disponible",
+            "Este dispositivo no tiene huella digital configurada o el lector no está disponible.\n\nPuedes entrar con la cuenta de demostración o usar tu contraseña.",
+            "Usar cuenta de prueba",
             "Cancelar");
 
-        if (!verify)
+        if (!useDemo)
             return;
 
         if (AppSession.TryLoginDemo(out var error))

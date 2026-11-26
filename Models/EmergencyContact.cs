@@ -10,7 +10,7 @@ public class EmergencyContact
     public string Relation { get; set; } = "Familiar";
     public string Priority { get; set; } = "Secundaria";
     public string Phone { get; set; } = string.Empty;
-    public string ActionMode { get; set; } = "SMS + GPS en vivo";
+    public string ActionMode { get; set; } = "WhatsApp + SMS con ubicación";
     public string FooterNote { get; set; } = "Notificación en altavoz";
     public string AvatarColor { get; set; } = "#1F3864";
     public bool Verified { get; set; }
@@ -64,6 +64,8 @@ public class EmergencyContact
     [JsonIgnore]
     public string FooterIcon => FooterNote switch
     {
+        var note when note.Contains("WhatsApp", StringComparison.OrdinalIgnoreCase) => Icons.Chat,
+        var note when note.Contains("SMS", StringComparison.OrdinalIgnoreCase) => Icons.Chat,
         var note when note.Contains("Notificación", StringComparison.OrdinalIgnoreCase) => Icons.NotificationsActive,
         var note when note.Contains("Seguimiento", StringComparison.OrdinalIgnoreCase) => Icons.LocationOn,
         var note when note.Contains("Control", StringComparison.OrdinalIgnoreCase) => Icons.Shield,

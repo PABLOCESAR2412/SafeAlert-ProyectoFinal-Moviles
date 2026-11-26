@@ -1,3 +1,4 @@
+using Microsoft.Maui.ApplicationModel;
 using SafeAlert.Models;
 using SafeAlert.Services;
 
@@ -19,6 +20,7 @@ public partial class MainPage : ContentPage
     private int _currentTab = -1;
     private bool _shakePromptOpen;
     private bool _sensorInfoShown;
+    private UpdateInfo? _pendingUpdate;
 
     public MainPage(string? initialTab = null)
     {
@@ -54,6 +56,7 @@ public partial class MainPage : ContentPage
         _profileView.LogoutRequested += Logout;
         _profileView.ShakeSettingChanged += ShakeSettingChanged;
         _profileView.SimulateShakeRequested += SimulateShake;
+        _profileView.UpdateCheckRequested += () => _ = CheckUpdateAsync();
         _profileView.ProfileUpdated += () =>
         {
             UpdateHeader();
@@ -108,13 +111,70 @@ public partial class MainPage : ContentPage
 
     private void HeaderAvatar_Tapped(object sender, TappedEventArgs e) => SwitchTab(4);
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         UpdateHeader();
 
         if (AppSession.Account?.Settings.ShakeDetection == true)
             _shakeDetector.Start();
+
+        await RefreshLocationAsync();
+        await CheckUpdateAsync();
+    }
+
+    private async Task RefreshLocationAsync()
+    {
+        if (!await PermissionService.EnsureLocationAsync())
+            return;
+
+        await LocationService.RefreshAsync();
+        _homeView.RefreshView();
+    }
+
+    private async Task CheckUpdateAsync()
+    {
+        _pendingUpdate = await UpdateService.CheckAsync();
+
+        if (_pendingUpdate == null)
+        {
+            UpdateBanner.IsVisible = false;
+            return;
+        }
+
+        UpdateBannerText.Text = $"Versión {_pendingUpdate.LatestVersion} disponible.";
+        UpdateBanner.IsVisible = true;
+    }
+
+    private async void UpdateBanner_Clicked(object sender, EventArgs e)
+    {
+        if (_pendingUpdate == null)
+        {
+            UpdateBanner.IsVisible = false;
+            return;
+        }
+
+        var info = _pendingUpdate;
+        UpdateService.MarkSeen(info.LatestVersion);
+        UpdateBanner.IsVisible = false;
+
+        var open = await DisplayAlert(
+            "Actualizar SafeAlert",
+            $"Versión instalada: {AppInfo.Current.VersionString}\nVersión disponible: {info.LatestVersion}\n\n{info.Message}\n\nDescarga la nueva APK desde el enlace del administrador y ábrela. Android actualizará SafeAlert conservando tus datos.",
+            "Descargar",
+            "Ahora no");
+
+        if (!open || string.IsNullOrWhiteSpace(info.DownloadUrl))
+            return;
+
+        try
+        {
+            await Launcher.Default.OpenAsync(new Uri(info.DownloadUrl));
+        }
+        catch
+        {
+            await DisplayAlert("Actualización", "No se pudo abrir el enlace de descarga.", "Aceptar");
+        }
     }
 
     protected override void OnDisappearing()
@@ -157,7 +217,17 @@ public partial class MainPage : ContentPage
         }
 
         if (_shakeDetector.Start())
+        {
+            if (_sensorInfoShown)
+                return;
+
+            _sensorInfoShown = true;
+            await DisplayAlert(
+                "Sensor de movimiento activo",
+                "SafeAlert usará el acelerómetro para detectar sacudidas fuertes. En Android el acelerómetro no requiere un permiso especial: solo se lee mientras la app está abierta y no se guarda el movimiento continuo.",
+                "Entendido");
             return;
+        }
 
         if (_sensorInfoShown)
             return;
@@ -181,7 +251,7 @@ public partial class MainPage : ContentPage
         _shakePromptOpen = true;
         var send = await DisplayAlert(
             "Movimiento brusco detectado",
-            "El acelerómetro registró una sacudida. ¿Deseas enviar una alerta SOS a tus contactos y a la central 911?",
+            "El acelerómetro registró una sacudida. ¿Deseas registrar una alerta SOS para tus contactos? No se realizarán llamadas ni envíos externos.",
             "Enviar SOS",
             "Cancelar");
         _shakePromptOpen = false;
@@ -202,7 +272,7 @@ public partial class MainPage : ContentPage
 
         await DisplayAlert(
             "Alerta enviada",
-            $"Se notificó a {alert.NotifiedContacts} contacto(s) y a la central 911 con tu ubicación en tiempo real.",
+            $"Alerta SOS registrada para {alert.NotifiedContacts} contacto(s). No se realizó una llamada ni envío externo.",
             "Aceptar");
     }
 }

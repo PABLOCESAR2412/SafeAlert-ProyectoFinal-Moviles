@@ -1,3 +1,4 @@
+using Microsoft.Maui.ApplicationModel;
 using SafeAlert.Helpers;
 using SafeAlert.Services;
 
@@ -11,6 +12,7 @@ public partial class ProfileView : ContentView, IRefreshable
     public event Action<bool>? ShakeSettingChanged;
     public event Action? SimulateShakeRequested;
     public event Action? ProfileUpdated;
+    public event Action? UpdateCheckRequested;
 
     public ProfileView()
     {
@@ -39,28 +41,14 @@ public partial class ProfileView : ContentView, IRefreshable
             ? "Por definir"
             : account.Profile.DoctorName;
 
-        SosLockSwitch.IsToggled = account.Settings.SosOnLockScreen;
-        BackgroundSwitch.IsToggled = account.Settings.BackgroundLocation;
-        SirenSwitch.IsToggled = account.Settings.Siren;
+
         ShakeSwitch.IsToggled = account.Settings.ShakeDetection;
+        UpdateSubtitleLabel.Text = $"Versión {AppInfo.Current.VersionString} instalada";
+        VersionLabel.Text = $"SafeAlert v{AppInfo.Current.VersionString} · Datos locales";
 
         _loading = false;
     }
 
-    private void Setting_Toggled(object sender, ToggledEventArgs e)
-    {
-        if (_loading || AppSession.Account is not { } account)
-            return;
-
-        if (sender == SosLockSwitch)
-            account.Settings.SosOnLockScreen = e.Value;
-        else if (sender == BackgroundSwitch)
-            account.Settings.BackgroundLocation = e.Value;
-        else if (sender == SirenSwitch)
-            account.Settings.Siren = e.Value;
-
-        DataStore.Save();
-    }
 
     private void ShakeSwitch_Toggled(object sender, ToggledEventArgs e)
     {
@@ -124,7 +112,7 @@ public partial class ProfileView : ContentView, IRefreshable
 
         await Ui.Alert(
             "SafeAlert Pro",
-            $"Protección 24/7 monitoreada.\n\nTitular: {account?.Profile.FullName}\nID: {account?.Profile.MemberId}\nRenovación: {expiry}\n\nIncluye despacho prioritario 911/C5, ficha médica vital y respaldo cifrado.",
+            $"Perfil SafeAlert activo.\n\nTitular: {account?.Profile.FullName}\nID: {account?.Profile.MemberId}\nRenovación: {expiry}\n\nIncluye ficha médica, perfil de emergencia y historial local. Esta demo no realiza despacho ECU911 ni respaldo remoto.",
             "Aceptar");
     }
 
@@ -147,68 +135,43 @@ public partial class ProfileView : ContentView, IRefreshable
         SimulateShakeRequested?.Invoke();
     }
 
-    private async void TripleTap_Tapped(object sender, TappedEventArgs e)
-    {
-        if (AppSession.Account is not { } account)
-            return;
-
-        var action = await Ui.ActionSheet(
-            "Triple pulsación del botón físico",
-            "Cancelar",
-            account.Settings.TripleTap ? "Desactivar triple pulsación" : "Activar triple pulsación",
-            "Cómo funciona");
-
-        if (action == "Activar triple pulsación" || action == "Desactivar triple pulsación")
-        {
-            account.Settings.TripleTap = !account.Settings.TripleTap;
-            DataStore.Save();
-            await Ui.Alert(
-                "Configuración actualizada",
-                account.Settings.TripleTap
-                    ? "La triple pulsación del botón de encendido activará una alerta SOS."
-                    : "La triple pulsación quedó desactivada.",
-                "Aceptar");
-        }
-        else if (action == "Cómo funciona")
-        {
-            await Ui.Alert(
-                "Triple pulsación",
-                "Pulsa tres veces seguidas el botón de encendido del teléfono. SafeAlert emitirá una alerta SOS silenciosa con tu ubicación, incluso con la pantalla bloqueada.",
-                "Entendido");
-        }
-    }
-
     private async void FallDetection_Tapped(object sender, TappedEventArgs e)
     {
         await Ui.Alert(
-            "Detección de caídas e impactos",
-            "SafeAlert usa el acelerómetro para detectar caídas o impactos fuertes.\n\nSensibilidad actual: media.\nSi se detecta un impacto y no confirmas que estás bien en 30 segundos, se enviará una alerta automática.",
+            "Sensor de movimiento",
+            "SafeAlert usa el acelerómetro del teléfono para detectar sacudidas fuertes (por ejemplo, agitar el equipo) y ofrecer el envío de la alerta.\n\nLa detección automática de caídas con cuenta regresiva es una mejora pendiente; hoy la activación siempre la confirmas tú.",
             "Aceptar");
-    }
-
-    private async void Devices_Tapped(object sender, TappedEventArgs e)
-    {
-        var sync = await Ui.Confirm(
-            "Dispositivos vinculados",
-            "Dispositivos activos:\n• Smartwatch SafeAlert (conectado)\n• Llavero SOS Bluetooth (conectado)\n\n¿Deseas sincronizar ahora?",
-            "Sincronizar",
-            "Cerrar");
-
-        if (sync)
-        {
-            await Ui.Alert(
-                "Dispositivos sincronizados",
-                $"Se sincronizaron 2 dispositivos correctamente.\nÚltima conexión: {DateTime.Now:HH:mm} hrs",
-                "Aceptar");
-        }
     }
 
     private async void Privacy_Tapped(object sender, TappedEventArgs e)
     {
+        await Ui.PushModal(new LegalPage());
+    }
+
+    private void Update_Tapped(object sender, TappedEventArgs e)
+    {
+        _ = ShowUpdateOptionsAsync();
+    }
+
+    private async Task ShowUpdateOptionsAsync()
+    {
+        var preview = UpdateService.Preview();
+        var enable = await Ui.Confirm(
+            "Actualizaciones de SafeAlert",
+            $"Versión instalada: {AppInfo.Current.VersionString}\n\nSafeAlert compara su versión con un archivo update.json publicado por el administrador y muestra un aviso discreto cuando hay una versión nueva. También puedes ver el aviso de ejemplo para comprobar cómo se verá.",
+            "Ver aviso de ejemplo",
+            "Cerrar");
+
+        if (!enable || preview == null)
+            return;
+
+        UpdateService.EnablePreview();
         await Ui.Alert(
-            "Privacidad y Términos Legales",
-            "SafeAlert protege tus datos con cifrado de extremo a extremo.\n\n• Tu ubicación solo se comparte durante una alerta.\n• Los contactos son verificados por ti.\n• Puedes exportar o eliminar tu historial en cualquier momento.\n\nVersión de política: 2026-01",
-            "Aceptar");
+            "Aviso de ejemplo activado",
+            $"Se mostrará el aviso de la versión {preview.LatestVersion} al volver al Inicio. No descarga nada hasta que publiques la APK.",
+            "Entendido");
+
+        UpdateCheckRequested?.Invoke();
     }
 
     private void Logout_Clicked(object sender, EventArgs e) => LogoutRequested?.Invoke();

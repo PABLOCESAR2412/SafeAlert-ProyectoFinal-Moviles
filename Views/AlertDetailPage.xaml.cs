@@ -49,7 +49,7 @@ public partial class AlertDetailPage : ContentPage
         {
             AlertStatus.InProgress => "Evento en curso • seguimiento activo",
             AlertStatus.FalseAlarm => "Evento cerrado como falsa alarma",
-            _ => "Reporte cifrado y trazable"
+            _ => "Reporte local y trazable"
         };
 
         var isOpen = _alert.Status == AlertStatus.InProgress;
@@ -77,7 +77,7 @@ public partial class AlertDetailPage : ContentPage
 
         await Ui.Alert(
             "Alerta resuelta",
-            "El evento se cerró correctamente y se conserva en el historial cifrado.",
+            "El evento se cerró correctamente y se conserva en el historial local.",
             "Aceptar");
     }
 

@@ -97,7 +97,7 @@
                         <Entry x:Name="PhoneEntry"
                                Grid.Column="1"
                                Style="{StaticResource InputEntry}"
-                               Placeholder="+52 55 1234 5678"
+                               Placeholder="+593 99 123 4567"
                                Keyboard="Telephone"
                                ReturnType="Next" />
                     </Grid>
@@ -204,7 +204,7 @@
                             <Entry x:Name="DoctorPhoneEntry"
                                    Grid.Column="1"
                                    Style="{StaticResource InputEntry}"
-                                   Placeholder="+52 55 1122 3344"
+                                   Placeholder="+593 98 112 2334"
                                    Keyboard="Telephone"
                                    ReturnType="Done" />
                         </Grid>

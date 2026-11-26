@@ -139,6 +139,16 @@ public partial class HomeView : ContentView, IRefreshable
 
         try
         {
+            var granted = await PermissionService.EnsureLocationAsync();
+            if (!granted)
+            {
+                await Ui.Alert(
+                    "Permiso de ubicación",
+                    "Debes permitir la ubicación precisa para actualizar tu posición. Se conserva la ubicación demostrativa hasta que se conceda.",
+                    "Entendido");
+                return;
+            }
+
             var success = await LocationService.RefreshAsync();
             AddressLabel.Text = LocationService.Address;
             PrecisionLabel.Text = $"Precisión exacta: {LocationService.Precision.TrimStart('±')}";
@@ -197,7 +207,7 @@ public partial class HomeView : ContentView, IRefreshable
             LocationService.Longitude,
             notes: "Alerta silenciosa emitida desde un acceso rápido.");
 
-        SuccessMessage.Text = $"Se notificó de forma discreta a {alert.NotifiedContacts} contacto(s) con tu ubicación en tiempo real.";
+        SuccessMessage.Text = $"Alerta silenciosa registrada para {alert.NotifiedContacts} contacto(s). No se enviaron mensajes externos.";
         SuccessOverlay.IsVisible = true;
         AlertSent?.Invoke();
     }
@@ -282,7 +292,7 @@ public partial class HomeView : ContentView, IRefreshable
             automatic: false);
     }
 
-    private void SendWalkSafeAlert(string message, bool automatic)
+    private async void SendWalkSafeAlert(string message, bool automatic)
     {
         var alert = AlertService.Send(
             EmergencyType.WalkSafe,
@@ -294,7 +304,13 @@ public partial class HomeView : ContentView, IRefreshable
                 ? "Alerta automática: no se confirmó la llegada antes de la cuenta regresiva."
                 : "Alerta manual desde el modo Camina Seguro.");
 
-        SuccessMessage.Text = $"Se notificó a {alert.NotifiedContacts} contacto(s). La ubicación se comparte en tiempo real con la central 911.";
+        await SharingService.DispatchAsync(
+            AppSession.Account!,
+            message,
+            LocationService.Latitude,
+            LocationService.Longitude);
+
+        SuccessMessage.Text = $"Alerta de Camina Seguro registrada para {alert.NotifiedContacts} contacto(s). Revisa WhatsApp para confirmar el envío.";
         SuccessOverlay.IsVisible = true;
         AlertSent?.Invoke();
     }
@@ -411,7 +427,7 @@ public partial class HomeView : ContentView, IRefreshable
         SosCountdownOverlay.IsVisible = false;
     }
 
-    private void SendSosAlert()
+    private async void SendSosAlert()
     {
         var alert = AlertService.Send(
             EmergencyType.Panic,
@@ -421,7 +437,30 @@ public partial class HomeView : ContentView, IRefreshable
             LocationService.Longitude,
             notes: "Alerta SOS generada desde el botón de pánico tras mantener presionado 3 segundos.");
 
-        SuccessMessage.Text = $"Se notificó a {alert.NotifiedContacts} contacto(s) y a la central 911 con tu ubicación en tiempo real.";
+        var account = AppSession.Account!;
+        var share = await SharingService.DispatchAsync(
+            account,
+            EmergencyCatalog.DefaultMessage(EmergencyType.Panic),
+            LocationService.Latitude,
+            LocationService.Longitude);
+
+        if (share.HasPendingSms)
+        {
+            var sendSms = await Ui.Confirm(
+                "Alerta SOS registrada",
+                share.WhatsAppSent
+                    ? $"WhatsApp abierto con {share.PrimaryName} y tu ubicación. Confirma el envío.\n\n¿Enviar también SMS a {share.SmsPending.Count} contacto(s)?"
+                    : "No se pudo abrir WhatsApp. ¿Enviar el SMS de alerta a tus contactos?",
+                "Enviar SMS",
+                "Ahora no");
+
+            if (sendSms)
+                await SharingService.ComposeSmsAsync(
+                    share.SmsPending,
+                    EmergencyCatalog.DefaultMessage(EmergencyType.Panic));
+        }
+
+        SuccessMessage.Text = $"Alerta SOS registrada para {alert.NotifiedContacts} contacto(s). Ubicación compartida con {share.PrimaryName}.";
         SuccessOverlay.IsVisible = true;
         AlertSent?.Invoke();
     }

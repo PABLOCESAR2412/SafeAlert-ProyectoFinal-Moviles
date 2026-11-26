@@ -35,7 +35,7 @@
                                  CornerRadius="4"
                                  Color="{StaticResource Green}"
                                  VerticalOptions="Center" />
-                        <Label Text="Sincronizado"
+                        <Label Text="Modo local"
                                FontFamily="InterSemiBold"
                                FontSize="11"
                                TextColor="{StaticResource GreenDark}" />
@@ -49,7 +49,7 @@
                        Style="{StaticResource H1}"
                        FontSize="26"
                        LineBreakMode="WordWrap" />
-                <Label Text="Estas personas recibirán tu ubicación precisa en tiempo real y una llamada automática si activas una emergencia SOS."
+                <Label Text="Estas personas recibirán tu ubicación por WhatsApp o SMS cuando actives una emergencia SOS."
                        Style="{StaticResource Body}"
                        FontSize="13" />
             </VerticalStackLayout>
@@ -172,7 +172,7 @@
                                FontFamily="InterBold"
                                FontSize="15"
                                TextColor="White" />
-                        <Label Text="Envía un SMS simulado sin activar servicios de emergencia 911."
+                        <Label Text="Registra una prueba local. No activa servicios de emergencia ni envía mensajes."
                                FontSize="11"
                                TextColor="#CBD5E1"
                                LineBreakMode="WordWrap" />

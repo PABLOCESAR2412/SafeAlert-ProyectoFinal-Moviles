@@ -21,7 +21,7 @@
                     <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4"
                              Color="{StaticResource Green}" VerticalOptions="Center" />
                     <Label Grid.Column="1"
-                           Text="DESPACHO CONECTADO"
+                           Text="MODO LOCAL"
                            Style="{StaticResource CaptionStrong}"
                            TextColor="{StaticResource Navy}"
                            VerticalOptions="Center" />
@@ -30,7 +30,7 @@
                                FontFamily="MaterialIcons"
                                FontSize="16"
                                TextColor="{StaticResource Blue}" />
-                        <Label Text="En Línea"
+                        <Label Text="Activo"
                                FontFamily="InterSemiBold"
                                FontSize="12"
                                TextColor="{StaticResource Blue}" />
@@ -246,7 +246,7 @@
                                    FontFamily="MaterialIcons"
                                    FontSize="18"
                                    TextColor="{StaticResource Blue}" />
-                            <Label Text="Cifrado de extremo a extremo (E2EE)"
+                            <Label Text="Datos guardados en el dispositivo"
                                    Style="{StaticResource Caption}"
                                    TextColor="{StaticResource TextMuted}" />
                         </HorizontalStackLayout>
@@ -415,7 +415,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <Label Text="SafeAlert v1.0 • Protección 24/7"
+            <Label Text="SafeAlert v1.1 · Datos locales"
                    Style="{StaticResource Caption}"
                    HorizontalOptions="Center"
                    TextColor="{StaticResource TextLight}"

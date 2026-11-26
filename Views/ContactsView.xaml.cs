@@ -474,8 +474,8 @@ public partial class ContactsView : ContentView, IRefreshable
 
         var confirm = await Ui.Confirm(
             "Modo de Ensayo",
-            "Se enviará un SMS de prueba a tus contactos y se registrará en el historial. No se activará ningún servicio de emergencia 911.",
-            "Enviar prueba",
+            "Se registrará un evento de prueba en el historial local. No se envía ningún mensaje ni se contacta a servicios de emergencia.",
+            "Registrar prueba",
             "Cancelar");
 
         if (!confirm)
@@ -484,7 +484,7 @@ public partial class ContactsView : ContentView, IRefreshable
         var account = AppSession.Account;
         AlertService.Send(
             EmergencyType.Test,
-            "SMS de ensayo enviado por la usuaria. Esta no es una emergencia real.",
+            "Prueba local registrada por la usuaria. Esta no es una emergencia real.",
             LocationService.Address,
             LocationService.Latitude,
             LocationService.Longitude,
@@ -495,15 +495,15 @@ public partial class ContactsView : ContentView, IRefreshable
         AlertCreated?.Invoke();
         await Ui.Alert(
             "Ensayo completado",
-            $"El SMS simulado se envió a {account.Contacts.Count} contacto(s). El evento quedó registrado en el historial.",
+            $"La prueba quedó registrada en el historial local. No se enviaron mensajes a {account.Contacts.Count} contacto(s).",
             "Aceptar");
     }
 
     private async void Sync_Tapped(object sender, TappedEventArgs e)
     {
         await Ui.Alert(
-            "Red sincronizada",
-            $"Tus contactos están sincronizados con el despacho central.\nÚltima sincronización: {DateTime.Now:HH:mm} hrs\nContactos activos: {AppSession.Account?.Contacts.Count ?? 0}",
+            "Contactos locales",
+            $"Tus contactos están guardados en este dispositivo.\nÚltima revisión: {DateTime.Now:HH:mm} hrs\nContactos guardados: {AppSession.Account?.Contacts.Count ?? 0}",
             "Aceptar");
     }
 

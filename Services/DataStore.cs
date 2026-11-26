@@ -74,6 +74,24 @@ public static class DataStore
 
         _data ??= new AppData();
 
+        // Normaliza textos guardados por versiones anteriores.
+        foreach (var user in _data.Users)
+        {
+            foreach (var contact in user.Contacts)
+            {
+                if (contact.ActionMode is "SMS + GPS en vivo" or "Verificado 24/7" or "SMS + ubicación" or "Llamada Inmediata")
+                    contact.ActionMode = "WhatsApp + SMS con ubicación";
+
+                contact.FooterNote = contact.FooterNote switch
+                {
+                    "Notificación en altavoz" => "Recibe WhatsApp con ubicación",
+                    "Seguimiento 60 min" => "Respaldo por SMS",
+                    "Control de acceso y rondín" => "Contacto institucional",
+                    _ => contact.FooterNote
+                };
+            }
+        }
+
         if (_data.Users.Count == 0)
         {
             _data.Users.Add(CreateDemoAccount());
@@ -117,12 +135,12 @@ public static class DataStore
             Profile = new UserProfile
             {
                 FullName = "Elena Rosales Martínez",
-                Phone = "+52 55 4321 8765",
+                Phone = "+593 98765 4321",
                 Email = "elena.rosales@safealert.app",
                 BloodType = "O+",
                 Allergies = "Penicilina",
                 DoctorName = "Dr. Fernando Torres",
-                DoctorPhone = "+52 55 1122 3344",
+                DoctorPhone = "+593 98123 4567",
                 MemberId = "SA-8492",
                 IsPro = true
             },
@@ -136,9 +154,9 @@ public static class DataStore
                 Name = "Dra. Carmen Morales",
                 Relation = "Mamá",
                 Priority = "Primaria",
-                Phone = "+52 55 1234 5678",
-                ActionMode = "Llamada Inmediata",
-                FooterNote = "Notificación en altavoz",
+                Phone = "+593 99111 2233",
+                ActionMode = "WhatsApp + SMS con ubicación",
+                FooterNote = "Recibe WhatsApp con ubicación",
                 AvatarColor = "#1F3864",
                 Verified = true,
                 Order = 1
@@ -148,9 +166,9 @@ public static class DataStore
                 Name = "Alejandro Ruiz",
                 Relation = "Hermano",
                 Priority = "Secundaria",
-                Phone = "+52 55 9876 5432",
-                ActionMode = "SMS + GPS en vivo",
-                FooterNote = "Seguimiento 60 min",
+                Phone = "+593 98888 7766",
+                ActionMode = "WhatsApp + SMS con ubicación",
+                FooterNote = "Respaldo por SMS",
                 AvatarColor = "#0074D5",
                 Verified = true,
                 Order = 2
@@ -160,9 +178,9 @@ public static class DataStore
                 Name = "Seguridad Residencial",
                 Relation = "Cuerpo de Guardias",
                 Priority = "Caseta",
-                Phone = "+52 55 4433 2211",
-                ActionMode = "Verificado 24/7",
-                FooterNote = "Control de acceso y rondín",
+                Phone = "+593 2 234 5678",
+                ActionMode = "WhatsApp + SMS con ubicación",
+                FooterNote = "Contacto institucional",
                 AvatarColor = "#0F766E",
                 Verified = true,
                 Order = 3
@@ -177,9 +195,9 @@ public static class DataStore
                 Type = EmergencyType.Medical,
                 Status = AlertStatus.Resolved,
                 Message = "Emergencia médica. Dolor en el pecho y dificultad para respirar.",
-                Address = "Calle Liverpool 88, Col. Juárez",
-                Latitude = 19.4270,
-                Longitude = -99.1676,
+                Address = "Av. Amazonas N34-12 y Naciones Unidas, Quito",
+                Latitude = -0.1814,
+                Longitude = -78.4755,
                 CreatedAt = medicalTime,
                 NotifiedContacts = 3,
                 ResponseMinutes = 8,
@@ -192,9 +210,9 @@ public static class DataStore
                 Type = EmergencyType.Silent,
                 Status = AlertStatus.Resolved,
                 Message = "Alerta silenciosa activada. Compartan mi ubicación con mis contactos.",
-                Address = "Estación Metro Insurgentes",
-                Latitude = 19.4247,
-                Longitude = -99.1630,
+                Address = "Parque La Carolina, Quito",
+                Latitude = -0.1768,
+                Longitude = -78.4707,
                 CreatedAt = today.AddDays(-23).AddHours(22).AddMinutes(15),
                 NotifiedContacts = 2,
                 AudioRecorded = false,
@@ -207,8 +225,8 @@ public static class DataStore
                 Status = AlertStatus.Resolved,
                 Message = "Prueba del sistema SafeAlert. No es una emergencia real.",
                 Address = "Hogar (Zona Segura)",
-                Latitude = 19.4270,
-                Longitude = -99.1676,
+                Latitude = -0.1814,
+                Longitude = -78.4755,
                 CreatedAt = today.AddDays(-30).AddHours(10),
                 NotifiedContacts = 0,
                 AudioRecorded = false,

@@ -78,7 +78,7 @@
                                    TextColor="{StaticResource TextPrimary}"
                                    LineBreakMode="WordWrap" />
                             <Label x:Name="ProfilePhoneLabel"
-                                   Text="+52 55 4321 8765"
+                                   Text="+593 98 765 4321"
                                    FontSize="12"
                                    TextColor="{StaticResource TextMuted}" />
                             <Label x:Name="ProfileEmailLabel"
@@ -123,7 +123,7 @@
                                        FontSize="10"
                                        CharacterSpacing="0.6"
                                        TextColor="#93C5FD" />
-                                <Label Text="Protección 24/7 Monitoreada"
+                                <Label Text="Perfil de Emergencia"
                                        FontFamily="InterMedium"
                                        FontSize="12"
                                        TextColor="White" />
@@ -281,95 +281,11 @@
                             <Label Text="Protocolos de Activación"
                                    FontFamily="InterBold"
                                    FontSize="16" />
-                            <Label Text="Respuestas automáticas e inmediatas"
+                            <Label Text="Envío manual con tu confirmación"
                                    FontSize="11"
                                    TextColor="{StaticResource TextMuted}" />
                         </VerticalStackLayout>
                     </Grid>
-
-                    <!-- Botón SOS -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Label Text="&#xE899;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Botón SOS en pantalla de bloqueo"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Acceso táctil rápido sin desbloquear"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Switch x:Name="SosLockSwitch"
-                                Grid.Column="2"
-                                Style="{StaticResource SwitchStyle}"
-                                Toggled="Setting_Toggled"
-                                VerticalOptions="Center" />
-                    </Grid>
-
-                    <BoxView Style="{StaticResource Divider}" />
-
-                    <!-- Ubicación -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Label Text="&#xE55C;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Ubicación en segundo plano"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Transmisión en vivo durante el evento"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Switch x:Name="BackgroundSwitch"
-                                Grid.Column="2"
-                                Style="{StaticResource SwitchStyle}"
-                                Toggled="Setting_Toggled"
-                                VerticalOptions="Center" />
-                    </Grid>
-
-                    <BoxView Style="{StaticResource Divider}" />
-
-                    <!-- Sirena -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Label Text="&#xE04F;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="Alerta sonora (Sirena)"
-                                       FontFamily="InterSemiBold"
-                                       FontSize="13"
-                                       VerticalOptions="Center" />
-                                <Border BackgroundColor="{StaticResource SurfaceAlt}"
-                                        StrokeThickness="0"
-                                        Padding="7,2"
-                                        StrokeShape="RoundRectangle 6">
-                                    <Label Text="Silencioso"
-                                           FontFamily="InterMedium"
-                                           FontSize="9"
-                                           TextColor="{StaticResource TextMuted}" />
-                                </Border>
-                            </HorizontalStackLayout>
-                            <Label Text="Despacho encubierto sin emitir ruidos"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Switch x:Name="SirenSwitch"
-                                Grid.Column="2"
-                                Style="{StaticResource SwitchStyle}"
-                                Toggled="Setting_Toggled"
-                                VerticalOptions="Center" />
-                    </Grid>
-
-                    <BoxView Style="{StaticResource Divider}" />
 
                     <!-- Sacudida -->
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
@@ -422,34 +338,6 @@
 
                     <BoxView Style="{StaticResource Divider}" />
 
-                    <!-- Triple pulsación -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TripleTap_Tapped" />
-                        </Grid.GestureRecognizers>
-                        <Label Text="&#xE913;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Triple pulsación en botón físico"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Configurado • Botón de encendido"
-                                   FontSize="10"
-                                   TextColor="{StaticResource Blue}" />
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xE5CC;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
-                    </Grid>
-
-                    <BoxView Style="{StaticResource Divider}" />
-
                     <!-- Caídas -->
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
                         <Grid.GestureRecognizers>
@@ -461,10 +349,10 @@
                                TextColor="{StaticResource Navy}"
                                VerticalOptions="Center" />
                         <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Detección de caídas e impactos"
+                            <Label Text="Sensor de movimiento"
                                    FontFamily="InterSemiBold"
                                    FontSize="13" />
-                            <Label Text="Sensibilidad media (Acelerómetro)"
+                            <Label Text="Acelerómetro: detecta sacudidas"
                                    FontSize="10"
                                    TextColor="{StaticResource TextMuted}" />
                         </VerticalStackLayout>
@@ -479,46 +367,15 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Dispositivos y privacidad -->
+            <!-- Privacidad y datos -->
             <Border Style="{StaticResource Card}" Padding="14">
                 <VerticalStackLayout Spacing="11">
-                    <Label Text="Dispositivos y Privacidad"
+                    <Label Text="Privacidad y Datos"
                            FontFamily="InterBold"
                            FontSize="16"
                            Margin="0,0,0,1" />
 
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Devices_Tapped" />
-                        </Grid.GestureRecognizers>
-                        <Border WidthRequest="38"
-                                HeightRequest="38"
-                                BackgroundColor="{StaticResource SurfaceAlt}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 10">
-                            <Label Text="&#xE334;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="20"
-                                   TextColor="{StaticResource Navy}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                            <Label Text="Dispositivos vinculados"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Smartwatch, Llavero SOS (2 activos)"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xE5CC;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
-                    </Grid>
-
+                    
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Privacy_Tapped" />
@@ -539,7 +396,42 @@
                             <Label Text="Privacidad y Términos Legales"
                                    FontFamily="InterSemiBold"
                                    FontSize="13" />
-                            <Label Text="Cifrado de extremo a extremo activo"
+                            <Label Text="Datos locales y derechos del usuario"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xE5CC;"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="{StaticResource TextSoft}"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                    <BoxView Style="{StaticResource Divider}" />
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Update_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
+                                BackgroundColor="{StaticResource SurfaceAlt}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10">
+                            <Label Text="&#xF090;"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="20"
+                                   TextColor="{StaticResource Navy}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                            <Label Text="Actualizaciones"
+                                   FontFamily="InterSemiBold"
+                                   FontSize="13" />
+                            <Label x:Name="UpdateSubtitleLabel"
+                                   Text="Versión instalada"
                                    FontSize="10"
                                    TextColor="{StaticResource TextMuted}" />
                         </VerticalStackLayout>
@@ -571,7 +463,7 @@
             </Button>
 
             <Label x:Name="VersionLabel"
-                   Text="SafeAlert v4.12.0 • Dispatch Engine 99.98% SLA"
+                   Text="SafeAlert v1.1 · Datos locales"
                    Style="{StaticResource Caption}"
                    HorizontalOptions="Center"
                    TextColor="{StaticResource TextSoft}"

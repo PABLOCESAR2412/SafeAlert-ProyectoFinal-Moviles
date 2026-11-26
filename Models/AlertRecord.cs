@@ -96,8 +96,8 @@ public class AlertRecord
     public string ContactsLine => NotifiedContacts switch
     {
         0 => "Sin contactos notificados",
-        1 => "1 contacto notificado en tiempo real",
-        _ => $"{NotifiedContacts} contactos notificados en tiempo real"
+        1 => "1 contacto incluido en la alerta",
+        _ => $"{NotifiedContacts} contactos incluidos en la alerta"
     };
 
     [JsonIgnore]

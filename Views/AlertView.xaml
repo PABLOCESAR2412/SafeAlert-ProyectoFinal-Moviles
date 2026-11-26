@@ -34,7 +34,7 @@
                                      CornerRadius="3"
                                      Color="#FCA5A5"
                                      VerticalOptions="Center" />
-                            <Label Text="DESPACHO CRÍTICO 24/7"
+                            <Label Text="ALERTA PRIORITARIA"
                                    FontFamily="InterBold"
                                    FontSize="10"
                                    CharacterSpacing="0.8"
@@ -54,10 +54,15 @@
                     Padding="0"
                     StrokeShape="RoundRectangle 18">
                 <Grid HeightRequest="190">
-                    <Image Source="map_alert.png"
+                    <Image x:Name="MapImage"
+                           Source="map_alert.png"
                            Aspect="AspectFill"
                            HorizontalOptions="Fill"
-                           VerticalOptions="Fill" />
+                           VerticalOptions="Fill">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OpenMap_Tapped" />
+                        </Image.GestureRecognizers>
+                    </Image>
 
                     <!-- Cubre la etiqueta ya incluida en la imagen -->
                     <Border BackgroundColor="White"
@@ -121,17 +126,17 @@
                            VerticalOptions="Start" />
                     <VerticalStackLayout Grid.Column="1" Spacing="3">
                         <Label x:Name="AddressLabel"
-                               Text="Paseo de la Reforma #222, Col. Juárez"
+                               Text="Av. Amazonas N34-12 y Naciones Unidas, Quito"
                                FontFamily="InterBold"
                                FontSize="14"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap" />
                         <Label x:Name="CoordinatesLabel"
-                               Text="Lat: 19.4270, Lon: -99.1676"
+                               Text="Lat: -0.1814, Lon: -78.4755"
                                FontSize="11"
                                TextColor="{StaticResource TextMuted}" />
                         <Label x:Name="NearbyLabel"
-                               Text="• Cerca de Glorieta del Ahuehuete"
+                               Text="• Cerca de Parque La Carolina"
                                FontSize="11"
                                TextColor="{StaticResource TextMuted}" />
                     </VerticalStackLayout>
@@ -310,7 +315,7 @@
                                    FontFamily="MaterialIcons"
                                    FontSize="16"
                                    TextColor="{StaticResource GreenDark}" />
-                            <Label Text="Adjuntará enlace de GPS en tiempo real"
+                            <Label Text="Adjuntará enlace de ubicación (Google Maps)"
                                    FontSize="11"
                                    TextColor="{StaticResource TextMuted}" />
                         </HorizontalStackLayout>
@@ -327,7 +332,7 @@
             <Border Style="{StaticResource Card}" Padding="14">
                 <VerticalStackLayout Spacing="11">
                     <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="DESTINATARIOS AUTOMÁTICOS"
+                        <Label Text="DESTINATARIOS"
                                Style="{StaticResource CaptionStrong}"
                                TextColor="{StaticResource TextMuted}" />
                         <Border Grid.Column="1"
@@ -343,6 +348,9 @@
                     </Grid>
 
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CallEmergency_Tapped" />
+                        </Grid.GestureRecognizers>
                         <Border WidthRequest="42"
                                 HeightRequest="42"
                                 BackgroundColor="{StaticResource RedTint}"
@@ -356,18 +364,18 @@
                                    VerticalOptions="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                            <Label Text="Central 911 / C5 CDMX"
+                            <Label Text="Llamar al 911"
                                    FontFamily="InterBold"
                                    FontSize="14" />
-                            <Label Text="Despacho por canal prioritario IP"
+                            <Label Text="Abre el marcador; tú confirmas la llamada"
                                    FontSize="11"
                                    TextColor="{StaticResource TextMuted}" />
                         </VerticalStackLayout>
                         <Label Grid.Column="2"
-                               Text="&#xEF76;"
+                               Text="&#xE5CC;"
                                FontFamily="MaterialIcons"
                                FontSize="19"
-                               TextColor="{StaticResource GreenDark}"
+                               TextColor="{StaticResource TextSoft}"
                                VerticalOptions="Center" />
                     </Grid>
 
@@ -383,7 +391,7 @@
                                    FontFamily="InterBold"
                                    FontSize="14" />
                             <Label x:Name="RecipientsSubtitle"
-                                   Text="SMS de alerta, llamada automática y push"
+                                   Text="WhatsApp con ubicación y SMS de respaldo"
                                    FontSize="11"
                                    TextColor="{StaticResource TextMuted}"
                                    LineBreakMode="WordWrap" />
@@ -414,7 +422,7 @@
                 </Button.ImageSource>
             </Button>
 
-            <Label Text="Notificará con sonido de máxima prioridad a contactos y 911"
+            <Label Text="Prepara WhatsApp con tu ubicación y un SMS para tus contactos"
                    FontSize="10"
                    TextColor="{StaticResource TextMuted}"
                    HorizontalTextAlignment="Center"

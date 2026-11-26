@@ -23,7 +23,7 @@
                                 <Label Text="SISTEMA ACTIVO &amp; PROTEGIDO"
                                        FontFamily="InterBold" FontSize="10"
                                        TextColor="{StaticResource GreenDark}" />
-                                <Label Text="Monitoreo en tiempo real"
+                                <Label Text="Ubicación del dispositivo"
                                        FontSize="11" TextColor="{StaticResource TextMuted}" />
                             </VerticalStackLayout>
                             <Label Grid.Column="2"
@@ -65,7 +65,7 @@
                                    Style="{StaticResource CaptionStrong}"
                                    TextColor="{StaticResource TextSoft}" />
                             <Label x:Name="AddressLabel"
-                                   Text="Paseo de la Reforma #222, Col. Juárez"
+                                   Text="Av. Amazonas N34-12 y Naciones Unidas, Quito"
                                    FontFamily="InterBold" FontSize="16"
                                    TextColor="{StaticResource TextPrimary}"
                                    LineBreakMode="WordWrap" MaxLines="2" />
@@ -279,12 +279,12 @@
                                            TextColor="{StaticResource Blue}"
                                            HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
-                                <Label Grid.Column="2" Text="911 / C5"
+                                <Label Grid.Column="2" Text="911"
                                        Style="{StaticResource Caption}"
                                        TextColor="{StaticResource Blue}" VerticalOptions="Center" />
                             </Grid>
                             <Label Text="Seguridad Policial" FontFamily="InterBold" FontSize="14" Margin="0,3,0,0" />
-                            <Label Text="Envío a patrullas" Style="{StaticResource BodySmall}" />
+                            <Label Text="Alerta con ubicación" Style="{StaticResource BodySmall}" />
                         </VerticalStackLayout>
                     </Border>
 
@@ -324,7 +324,7 @@
                                TextColor="{StaticResource GreenDark}"
                                VerticalOptions="Center" />
                         <Label Grid.Column="1"
-                               Text="Prueba de señal exitosa hace 5 minutos"
+                               Text="Comprobar estado del dispositivo"
                                FontSize="12"
                                TextColor="{StaticResource TextMuted}"
                                VerticalOptions="Center" />
@@ -365,7 +365,7 @@
                            FontFamily="InterExtraBold" FontSize="64"
                            TextColor="{StaticResource Red}"
                            HorizontalOptions="Center" />
-                    <Label Text="Se notificará a tus contactos y a la central 911 con tu ubicación en tiempo real."
+                    <Label Text="Se preparará el mensaje con tu ubicación para tus contactos de confianza."
                            Style="{StaticResource Body}"
                            FontSize="13"
                            HorizontalTextAlignment="Center" />
@@ -397,7 +397,7 @@
                     </Border>
                     <Label Text="Alerta enviada" Style="{StaticResource H2}" HorizontalOptions="Center" />
                     <Label x:Name="SuccessMessage"
-                           Text="Tu red de apoyo y la central 911 recibieron tu ubicación."
+                           Text="Se abrió WhatsApp con tu ubicación para tu contacto principal."
                            Style="{StaticResource Body}"
                            FontSize="13"
                            HorizontalTextAlignment="Center" />
@@ -439,7 +439,7 @@
                            FontFamily="InterExtraBold" FontSize="48"
                            TextColor="{StaticResource Navy}"
                            HorizontalOptions="Center" />
-                    <Label Text="Si no confirmas que llegaste a salvo, enviaremos una alerta automática."
+                    <Label Text="Si no confirmas que llegaste a salvo, se te pedirá confirmar el envío a tus contactos."
                            Style="{StaticResource BodySmall}"
                            HorizontalTextAlignment="Center" />
                     <Button Text="Estoy bien"

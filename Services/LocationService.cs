@@ -6,10 +6,10 @@ public static class LocationService
 {
     private static bool _initialized;
 
-    public static double Latitude { get; private set; } = 19.4270;
-    public static double Longitude { get; private set; } = -99.1676;
-    public static string Address { get; private set; } = "Paseo de la Reforma #222, Col. Juárez";
-    public static string Nearby { get; private set; } = "Cerca de Glorieta del Ahuehuete";
+    public static double Latitude { get; private set; } = -0.1814;
+    public static double Longitude { get; private set; } = -78.4755;
+    public static string Address { get; private set; } = "Av. Amazonas N34-12 y Naciones Unidas, Quito";
+    public static string Nearby { get; private set; } = "Cerca de Parque La Carolina";
     public static string Precision { get; private set; } = "±15 m";
     public static bool UsingSimulation { get; private set; } = true;
 

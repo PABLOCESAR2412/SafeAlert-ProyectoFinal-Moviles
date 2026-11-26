@@ -31,7 +31,7 @@ public partial class HistoryView : ContentView, IRefreshable
         FalseChipLabel.Text = $"Falsas alarmas ({falseAlarms})";
 
         OperationalLabel.Text = inProgress > 0
-            ? $"{inProgress} alerta(s) en curso. El despacho está monitoreando el evento."
+            ? $"{inProgress} alerta(s) en curso. Hay una alerta en curso."
             : "Sin alertas pendientes o en riesgo actualmente.";
 
         UpdateFilterStyles();

@@ -30,7 +30,7 @@
                                FontSize="16"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap" />
-                        <Label Text="Historial cifrado y trazable"
+                        <Label Text="Historial local y trazable"
                                FontSize="12"
                                TextColor="{StaticResource TextMuted}" />
                     </VerticalStackLayout>

@@ -32,7 +32,7 @@
                     Padding="9,4"
                     StrokeShape="RoundRectangle 999"
                     VerticalOptions="Center">
-                <Label Text="Cifrado"
+                <Label Text="Local"
                        FontFamily="InterSemiBold"
                        FontSize="10"
                        TextColor="{StaticResource GreenDark}" />
@@ -64,7 +64,7 @@
                                    VerticalOptions="Center" />
                         </Border>
                         <Label Grid.Column="1"
-                               Text="Este contacto recibirá tu ubicación GPS en tiempo real y una notificación automática cuando actives una alerta SOS."
+                               Text="Este contacto recibirá tu ubicación por WhatsApp o SMS cuando actives una alerta SOS."
                                FontSize="12"
                                TextColor="{StaticResource Navy}"
                                LineBreakMode="WordWrap"
@@ -131,7 +131,7 @@
                         <Entry x:Name="PhoneEntry"
                                Grid.Column="1"
                                Style="{StaticResource InputEntry}"
-                               Placeholder="+52 55 1234 5678"
+                               Placeholder="+593 99 123 4567"
                                Keyboard="Telephone"
                                ReturnType="Next" />
                     </Grid>
@@ -158,21 +158,10 @@
                     </Grid>
                 </Border>
 
-                <Label Text="Nota de seguimiento" Style="{StaticResource LabelBold}" />
-                <Border x:Name="FooterBorder" Style="{StaticResource InputBorder}">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                        <Label Text="&#xE88E;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
-                        <Entry x:Name="FooterEntry"
-                               Grid.Column="1"
-                               Style="{StaticResource InputEntry}"
-                               Placeholder="Ej. Notificación en altavoz"
-                               ReturnType="Done" />
-                    </Grid>
-                </Border>
+                <Button Text="Elegir de mis contactos"
+                        Style="{StaticResource SoftButton}"
+                        Clicked="PickPhoneContact_Clicked"
+                        Margin="0,2,0,0" />
 
                 <Border BackgroundColor="{StaticResource AmberTint}"
                         Stroke="#FDE68A"
@@ -186,7 +175,7 @@
                                TextColor="{StaticResource Amber}"
                                VerticalOptions="Start" />
                         <Label Grid.Column="1"
-                               Text="Recomendamos verificar el número antes de guardar. En una emergencia real, el contacto recibirá una llamada automática y tu ubicación exacta."
+                               Text="Recomendamos verificar el número antes de guardar. En una emergencia, SafeAlert abrirá WhatsApp con tu ubicación para el contacto principal y un SMS para los demás."
                                FontSize="11"
                                TextColor="#92400E"
                                LineBreakMode="WordWrap" />

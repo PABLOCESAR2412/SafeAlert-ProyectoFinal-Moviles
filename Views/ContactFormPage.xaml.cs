@@ -30,13 +30,7 @@ public partial class ContactFormPage : ContentPage
 
         RelationPicker.ItemsSource = _relations;
         PriorityPicker.ItemsSource = new List<string> { "Primaria", "Secundaria", "Caseta", "Vecino", "Colega" };
-        ActionPicker.ItemsSource = new List<string>
-        {
-            "Llamada Inmediata",
-            "SMS + GPS en vivo",
-            "Verificado 24/7",
-            "Notificación Push"
-        };
+        ActionPicker.ItemsSource = new List<string> { "WhatsApp + SMS con ubicación" };
 
         if (_isEditing)
         {
@@ -45,27 +39,42 @@ public partial class ContactFormPage : ContentPage
 
             NameEntry.Text = contact!.Name;
             PhoneEntry.Text = contact.Phone;
-            FooterEntry.Text = contact.FooterNote;
 
             if (!_relations.Contains(contact.Relation))
                 _relations.Add(contact.Relation);
 
             RelationPicker.SelectedItem = contact.Relation;
             PriorityPicker.SelectedItem = contact.Priority;
-            ActionPicker.SelectedItem = contact.ActionMode;
+            ActionPicker.SelectedItem = "WhatsApp + SMS con ubicación";
         }
         else
         {
             RelationPicker.SelectedItem = "Familiar";
             PriorityPicker.SelectedItem = "Secundaria";
-            ActionPicker.SelectedItem = "SMS + GPS en vivo";
-            FooterEntry.Text = "Notificación en altavoz";
+            ActionPicker.SelectedItem = "WhatsApp + SMS con ubicación";
         }
     }
 
     private void Close_Clicked(object sender, EventArgs e)
     {
         _ = Navigation.PopModalAsync();
+    }
+
+    private async void PickPhoneContact_Clicked(object sender, EventArgs e)
+    {
+        var contact = await DeviceContactService.PickAsync();
+
+        if (contact == null)
+        {
+            await Ui.Alert(
+                "Contactos",
+                "No se pudo seleccionar un contacto. Comprueba el permiso o ingresa los datos manualmente.",
+                "Entendido");
+            return;
+        }
+
+        NameEntry.Text = contact.Name;
+        PhoneEntry.Text = contact.Phone;
     }
 
     private async void Save_Clicked(object sender, EventArgs e)
@@ -83,8 +92,8 @@ public partial class ContactFormPage : ContentPage
         var phone = PhoneEntry.Text?.Trim() ?? string.Empty;
         var relation = RelationPicker.SelectedItem as string ?? string.Empty;
         var priority = PriorityPicker.SelectedItem as string ?? "Secundaria";
-        var action = ActionPicker.SelectedItem as string ?? "SMS + GPS en vivo";
-        var footer = FooterEntry.Text?.Trim() ?? string.Empty;
+        var action = ActionPicker.SelectedItem as string ?? "WhatsApp + SMS con ubicación";
+        var footer = action == "Llamada Inmediata" ? "Llamada configurada" : "Acción configurada";
         var hasError = false;
 
         if (name.Length < 3 || !Validation.IsLetters(name))
@@ -115,9 +124,6 @@ public partial class ContactFormPage : ContentPage
 
         if (hasError)
             return;
-
-        if (string.IsNullOrWhiteSpace(footer))
-            footer = action == "Llamada Inmediata" ? "Notificación en altavoz" : "Seguimiento 60 min";
 
         if (_isEditing && _contact != null)
         {
