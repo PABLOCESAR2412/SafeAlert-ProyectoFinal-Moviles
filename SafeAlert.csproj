@@ -10,7 +10,7 @@
     <Nullable>enable</Nullable>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 
-    <ApplicationTitle>SafeAlert</ApplicationTitle>
+    <ApplicationTitle>Safe Alert</ApplicationTitle>
     <ApplicationId>com.uisrael.safealert</ApplicationId>
     <ApplicationVersion>2</ApplicationVersion>
     <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
@@ -29,6 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
   </ItemGroup>

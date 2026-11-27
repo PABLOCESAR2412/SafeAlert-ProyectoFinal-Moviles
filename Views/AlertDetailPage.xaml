@@ -22,7 +22,7 @@
                        FontSize="17"
                        TextColor="{StaticResource Navy}" />
                 <Label x:Name="HeaderSubtitle"
-                       Text="Reporte local y trazable"
+                       Text="Registro local de la alerta"
                        FontSize="11"
                        TextColor="{StaticResource TextMuted}" />
             </VerticalStackLayout>
@@ -170,67 +170,6 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Datos del reporte -->
-                <Border Style="{StaticResource Card}" Padding="14">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="DATOS DEL REPORTE"
-                               Style="{StaticResource CaptionStrong}"
-                               TextColor="{StaticResource TextMuted}" />
-
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-                            <Label Text="&#xF233;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="19"
-                                   TextColor="{StaticResource Navy}" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="1">
-                                <Label Text="Contactos notificados"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextMuted}" />
-                                <Label x:Name="ContactsLabel"
-                                       Text="Contactos incluidos en el envío"
-                                       FontFamily="InterSemiBold"
-                                       FontSize="12" />
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <BoxView Style="{StaticResource Divider}" />
-
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-                            <Label Text="&#xF803;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="19"
-                                   TextColor="{StaticResource Blue}" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="1">
-                                <Label Text="Respuesta y seguimiento"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextMuted}" />
-                                <Label x:Name="ResponseLabel"
-                                       Text="Tiempo de respuesta: 8 min"
-                                       FontFamily="InterSemiBold"
-                                       FontSize="12" />
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <BoxView Style="{StaticResource Divider}" />
-
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-                            <Label Text="&#xE31D;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="19"
-                                   TextColor="{StaticResource RedDark}" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="1">
-                                <Label Text="Audio de emergencia"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextMuted}" />
-                                <Label x:Name="AudioLabel"
-                                       Text="Grabación de audio disponible"
-                                       FontFamily="InterSemiBold"
-                                       FontSize="12" />
-                            </VerticalStackLayout>
-                        </Grid>
-                    </VerticalStackLayout>
-                </Border>
-
                 <!-- Notas -->
                 <Border x:Name="NotesCard"
                         BackgroundColor="{StaticResource SurfaceAlt}"
@@ -283,7 +222,7 @@
                         HeightRequest="42"
                         Clicked="FalseAlarm_Clicked" />
                 <Label x:Name="ClosedLabel"
-                       Text="Este evento ya está cerrado. El reporte se conserva en tu historial local."
+                       Text="Este evento ya está cerrado. El registro se conserva en tu historial local."
                        FontSize="11"
                        TextColor="{StaticResource TextMuted}"
                        HorizontalTextAlignment="Center"

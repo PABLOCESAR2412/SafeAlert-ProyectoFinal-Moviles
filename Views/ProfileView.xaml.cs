@@ -6,13 +6,11 @@ namespace SafeAlert.Views;
 
 public partial class ProfileView : ContentView, IRefreshable
 {
-    private bool _loading;
 
     public event Action? LogoutRequested;
-    public event Action<bool>? ShakeSettingChanged;
-    public event Action? SimulateShakeRequested;
     public event Action? ProfileUpdated;
-    public event Action? UpdateCheckRequested;
+    public event Action? MovementSettingChanged;
+    private bool _updatingSensorSettings;
 
     public ProfileView()
     {
@@ -24,11 +22,11 @@ public partial class ProfileView : ContentView, IRefreshable
         if (AppSession.Account is not { } account)
             return;
 
-        _loading = true;
 
+        UpdateSensorSwitches();
         ProfileAvatarLabel.Text = account.Profile.Initials;
         ProfileNameLabel.Text = account.Profile.FullName;
-        ProfilePhoneLabel.Text = account.Profile.Phone;
+        ProfilePhoneLabel.Text = Validation.NormalizePhone(account.Profile.Phone) ?? account.Profile.Phone;
         ProfileEmailLabel.Text = account.Profile.Email;
         MemberIdLabel.Text = $"ID #{account.Profile.MemberId}";
 
@@ -42,22 +40,62 @@ public partial class ProfileView : ContentView, IRefreshable
             : account.Profile.DoctorName;
 
 
-        ShakeSwitch.IsToggled = account.Settings.ShakeDetection;
-        UpdateSubtitleLabel.Text = $"Versión {AppInfo.Current.VersionString} instalada";
         VersionLabel.Text = $"SafeAlert v{AppInfo.Current.VersionString} · Datos locales";
 
-        _loading = false;
     }
 
 
-    private void ShakeSwitch_Toggled(object sender, ToggledEventArgs e)
+    private void UpdateSensorSwitches()
     {
-        if (_loading || AppSession.Account is not { } account)
+        _updatingSensorSettings = true;
+        LocationSwitch.IsToggled = PermissionService.LocationEnabled;
+        ContactsSwitch.IsToggled = PermissionService.ContactsEnabled;
+        MovementSwitch.IsToggled = PermissionService.MovementEnabled;
+        _updatingSensorSettings = false;
+    }
+
+    private async void SensorSetting_Toggled(object? sender, ToggledEventArgs e)
+    {
+        if (_updatingSensorSettings || sender is not Switch toggle)
             return;
 
-        account.Settings.ShakeDetection = e.Value;
-        DataStore.Save();
-        ShakeSettingChanged?.Invoke(e.Value);
+        if (toggle == MovementSwitch)
+        {
+            PermissionService.MovementEnabled = e.Value
+                && await PermissionService.SensorStatusAsync() == "Acelerómetro disponible";
+            MovementSettingChanged?.Invoke();
+            UpdateSensorSwitches();
+            if (e.Value && !PermissionService.MovementEnabled)
+                await Ui.Alert("Acelerómetro", "El sensor no está disponible en este dispositivo.", "Entendido");
+            return;
+        }
+
+        LocationSwitch.IsEnabled = ContactsSwitch.IsEnabled = MovementSwitch.IsEnabled = false;
+        try
+        {
+            bool granted;
+            if (toggle == LocationSwitch)
+            {
+                granted = e.Value && await PermissionService.EnsureLocationAsync(request: true);
+                PermissionService.LocationEnabled = granted;
+                LocationService.ClearPosition();
+                if (granted)
+                    _ = LocationService.RefreshAsync();
+            }
+            else
+            {
+                granted = e.Value && await PermissionService.EnsureContactsAsync(request: true);
+                PermissionService.ContactsEnabled = granted;
+            }
+
+            UpdateSensorSwitches();
+            if (e.Value && !granted)
+                await Ui.Alert("Permiso no concedido", "Puedes revisar el permiso de SafeAlert en los ajustes del dispositivo.", "Entendido");
+        }
+        finally
+        {
+            LocationSwitch.IsEnabled = ContactsSwitch.IsEnabled = MovementSwitch.IsEnabled = true;
+        }
     }
 
     private async void EditProfile_Clicked(object sender, EventArgs e) => await OpenEditor(false);
@@ -76,32 +114,28 @@ public partial class ProfileView : ContentView, IRefreshable
         await Ui.PushModal(page);
     }
 
-    private async void CallDoctor_Clicked(object sender, EventArgs e)
+    private async void CallDoctor_Clicked(object? sender, EventArgs e)
     {
-        if (AppSession.Account is not { } account)
-            return;
-
-        if (string.IsNullOrWhiteSpace(account.Profile.DoctorPhone))
+        var phone = Validation.NormalizePhone(AppSession.Account?.Profile.DoctorPhone);
+        if (string.IsNullOrWhiteSpace(phone))
         {
             await Ui.Alert(
                 "Contacto médico",
-                "Aún no registras el teléfono de tu médico principal. Puedes agregarlo en la ficha médica de emergencia.",
+                "Agrega o corrige el teléfono del médico principal en la ficha médica.",
                 "Aceptar");
             return;
         }
 
-        var call = await Ui.Confirm(
-            "Contacto médico principal",
-            $"Se marcará a {account.Profile.DoctorName} al {account.Profile.DoctorPhone}.\n\nEn esta demostración de Windows la llamada es simulada.",
-            "Marcar",
-            "Cancelar");
-
-        if (call)
+        try
+        {
+            PhoneDialer.Default.Open(phone);
+        }
+        catch
         {
             await Ui.Alert(
-                "Llamada simulada",
-                $"Llamada de prueba con {account.Profile.DoctorName}.\nLa ficha médica se compartió correctamente.",
-                "Finalizar");
+                "Marcador no disponible",
+                $"Abre la app Teléfono y marca el número guardado: {phone}.",
+                "Aceptar");
         }
     }
 
@@ -116,63 +150,8 @@ public partial class ProfileView : ContentView, IRefreshable
             "Aceptar");
     }
 
-    private async void TestShake_Tapped(object sender, TappedEventArgs e)
-    {
-        if (AppSession.Account?.Settings.ShakeDetection != true)
-        {
-            var enable = await Ui.Confirm(
-                "Detección de sacudidas",
-                "La detección está desactivada. ¿Deseas activarla para probar el sensor?",
-                "Activar",
-                "Cancelar");
-
-            if (!enable)
-                return;
-
-            ShakeSwitch.IsToggled = true;
-        }
-
-        SimulateShakeRequested?.Invoke();
-    }
-
-    private async void FallDetection_Tapped(object sender, TappedEventArgs e)
-    {
-        await Ui.Alert(
-            "Sensor de movimiento",
-            "SafeAlert usa el acelerómetro del teléfono para detectar sacudidas fuertes (por ejemplo, agitar el equipo) y ofrecer el envío de la alerta.\n\nLa detección automática de caídas con cuenta regresiva es una mejora pendiente; hoy la activación siempre la confirmas tú.",
-            "Aceptar");
-    }
-
-    private async void Privacy_Tapped(object sender, TappedEventArgs e)
-    {
+    private async void Privacy_Clicked(object? sender, EventArgs e) =>
         await Ui.PushModal(new LegalPage());
-    }
-
-    private void Update_Tapped(object sender, TappedEventArgs e)
-    {
-        _ = ShowUpdateOptionsAsync();
-    }
-
-    private async Task ShowUpdateOptionsAsync()
-    {
-        var preview = UpdateService.Preview();
-        var enable = await Ui.Confirm(
-            "Actualizaciones de SafeAlert",
-            $"Versión instalada: {AppInfo.Current.VersionString}\n\nSafeAlert compara su versión con un archivo update.json publicado por el administrador y muestra un aviso discreto cuando hay una versión nueva. También puedes ver el aviso de ejemplo para comprobar cómo se verá.",
-            "Ver aviso de ejemplo",
-            "Cerrar");
-
-        if (!enable || preview == null)
-            return;
-
-        UpdateService.EnablePreview();
-        await Ui.Alert(
-            "Aviso de ejemplo activado",
-            $"Se mostrará el aviso de la versión {preview.LatestVersion} al volver al Inicio. No descarga nada hasta que publiques la APK.",
-            "Entendido");
-
-        UpdateCheckRequested?.Invoke();
-    }
 
     private void Logout_Clicked(object sender, EventArgs e) => LogoutRequested?.Invoke();
 }

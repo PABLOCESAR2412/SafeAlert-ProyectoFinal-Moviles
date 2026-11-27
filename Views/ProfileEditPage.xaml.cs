@@ -24,11 +24,11 @@ public partial class ProfileEditPage : ContentPage
 
         MemberChipLabel.Text = account.Profile.MemberId;
         NameEntry.Text = account.Profile.FullName;
-        PhoneEntry.Text = account.Profile.Phone;
+        PhoneEntry.Text = Validation.NormalizePhone(account.Profile.Phone) ?? account.Profile.Phone;
         EmailEntry.Text = account.Profile.Email;
         AllergiesEntry.Text = account.Profile.Allergies;
         DoctorEntry.Text = account.Profile.DoctorName;
-        DoctorPhoneEntry.Text = account.Profile.DoctorPhone;
+        DoctorPhoneEntry.Text = Validation.NormalizePhone(account.Profile.DoctorPhone) ?? account.Profile.DoctorPhone;
 
         BloodPicker.SelectedItem = account.Profile.BloodTypeDisplay;
         if (BloodPicker.SelectedIndex < 0)
@@ -64,7 +64,7 @@ public partial class ProfileEditPage : ContentPage
         }
 
         var name = NameEntry.Text?.Trim() ?? string.Empty;
-        var phone = PhoneEntry.Text?.Trim() ?? string.Empty;
+        var phone = Validation.NormalizePhone(PhoneEntry.Text) ?? string.Empty;
         var email = EmailEntry.Text?.Trim().ToLowerInvariant() ?? string.Empty;
         var blood = BloodPicker.SelectedItem as string ?? "O+";
         var allergies = AllergiesEntry.Text?.Trim() ?? string.Empty;
@@ -80,7 +80,7 @@ public partial class ProfileEditPage : ContentPage
 
         if (!Validation.IsValidPhone(phone))
         {
-            ShowError(PhoneError, PhoneBorder, "Ingresa un teléfono de 10 a 15 dígitos.");
+            ShowError(PhoneError, PhoneBorder, "Ingresa un celular como 0991234567 o un fijo como 022345678.");
             hasError = true;
         }
 
@@ -99,7 +99,7 @@ public partial class ProfileEditPage : ContentPage
 
         if (!string.IsNullOrWhiteSpace(doctorPhone) && !Validation.IsValidPhone(doctorPhone))
         {
-            ShowError(DoctorPhoneError, DoctorPhoneBorder, "El teléfono del médico debe tener entre 10 y 15 dígitos.");
+            ShowError(DoctorPhoneError, DoctorPhoneBorder, "Ingresa un celular como 0991234567 o un fijo como 022345678.");
             hasError = true;
         }
 
@@ -112,7 +112,7 @@ public partial class ProfileEditPage : ContentPage
         account.Profile.BloodType = blood;
         account.Profile.Allergies = string.IsNullOrWhiteSpace(allergies) ? "Ninguna" : allergies;
         account.Profile.DoctorName = string.IsNullOrWhiteSpace(doctor) ? "Por definir" : doctor;
-        account.Profile.DoctorPhone = doctorPhone;
+        account.Profile.DoctorPhone = Validation.NormalizePhone(doctorPhone) ?? string.Empty;
         account.Email = email;
         DataStore.Data.LastEmail = email;
 

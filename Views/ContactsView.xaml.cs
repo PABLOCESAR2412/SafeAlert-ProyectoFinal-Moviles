@@ -8,7 +8,6 @@ namespace SafeAlert.Views;
 public partial class ContactsView : ContentView, IRefreshable
 {
     public event Action? ContactsChanged;
-    public event Action? AlertCreated;
 
     public ContactsView()
     {
@@ -244,35 +243,23 @@ public partial class ContactsView : ContentView, IRefreshable
         // Teléfono y acciones
         var phoneLabel = new Label
         {
-            Text = contact.Phone,
+            Text = Validation.NormalizePhone(contact.Phone) ?? contact.Phone,
             FontFamily = "InterSemiBold",
             FontSize = 13,
             TextColor = Color.FromArgb("#111827"),
             VerticalOptions = LayoutOptions.Center
         };
 
-        var callButton = BuildMiniIconButton(Icons.Call, "#E9EBEE", "#1F3864");
-        callButton.Clicked += async (_, _) => await SimulateCall(contact);
+        var phoneRow = new Grid { ColumnSpacing = 8 };
+        phoneRow.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        phoneRow.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+        AddToGrid(phoneRow, phoneLabel, 0, 0);
 
-        var chatButton = BuildMiniIconButton(Icons.Chat, "#E9EBEE", "#1F3864");
-        chatButton.Clicked += async (_, _) => await SimulateSms(contact);
-
-        var phoneGrid = new Grid
-        {
-            BackgroundColor = Color.FromArgb("#F8F9FB"),
-            Padding = new Thickness(11, 7),
-            ColumnDefinitions =
-            {
-                new ColumnDefinition(GridLength.Star),
-                new ColumnDefinition(GridLength.Auto),
-                new ColumnDefinition(GridLength.Auto)
-            },
-            ColumnSpacing = 7
-        };
-        AddToGrid(phoneGrid, phoneLabel, 0, 0);
-        AddToGrid(phoneGrid, callButton, 1, 0);
-        AddToGrid(phoneGrid, chatButton, 2, 0);
-        body.Children.Add(phoneGrid);
+        var callButton = BuildMiniIconButton(Icons.Call, "#E8F2FF", "#005BB5");
+        SemanticProperties.SetDescription(callButton, $"Llamar a {contact.Name}");
+        callButton.Clicked += async (_, _) => await CallContactAsync(contact);
+        AddToGrid(phoneRow, callButton, 1, 0);
+        body.Children.Add(phoneRow);
 
         // Pie: nota, editar y menú
         var footerGrid = new Grid
@@ -336,6 +323,25 @@ public partial class ContactsView : ContentView, IRefreshable
         body.Children.Add(footerGrid);
         card.Content = body;
         return card;
+    }
+
+    private static async Task CallContactAsync(EmergencyContact contact)
+    {
+        var phone = Validation.NormalizePhone(contact.Phone);
+        if (phone is null)
+        {
+            await Ui.Alert("Teléfono no válido", "Corrige el número del contacto antes de llamar.", "Aceptar");
+            return;
+        }
+
+        try
+        {
+            PhoneDialer.Default.Open(phone);
+        }
+        catch
+        {
+            await Ui.Alert("Marcador no disponible", $"Abre Teléfono y marca {phone}.", "Aceptar");
+        }
     }
 
     private static Button BuildMiniIconButton(string glyph, string background, string foreground)
@@ -429,75 +435,9 @@ public partial class ContactsView : ContentView, IRefreshable
             ordered[i].Order = i + 1;
     }
 
-    private async Task SimulateCall(EmergencyContact contact)
-    {
-        var answer = await Ui.Confirm(
-            "Llamada simulada",
-            $"Se marcará a {contact.Name} al {contact.Phone}.\n\nEn esta demostración de Windows no se realiza una llamada real.",
-            "Marcar",
-            "Cancelar");
-
-        if (answer)
-        {
-            await Ui.Alert(
-                "Llamada en curso",
-                $"Llamada de prueba con {contact.Name}.\nDuración: 00:08\n\nLa llamada de emergencia real se activa desde un dispositivo móvil.",
-                "Finalizar");
-        }
-    }
-
-    private async Task SimulateSms(EmergencyContact contact)
-    {
-        var send = await Ui.Confirm(
-            "Mensaje de prueba",
-            $"Se enviará un SMS simulado a {contact.Name} con tu ubicación actual:\n{LocationService.Address}",
-            "Enviar SMS",
-            "Cancelar");
-
-        if (!send)
-            return;
-
-        await Ui.Alert(
-            "SMS simulado enviado",
-            $"Para: {contact.Name} ({contact.Phone})\n\n\"Estoy usando SafeAlert. Mi ubicación: {LocationService.Address}. {LocationService.CoordinatesText}\"\n\nNo se realizó ningún cargo real.",
-            "Aceptar");
-    }
-
     private async void AddContact_Clicked(object sender, EventArgs e) => await ShowContactForm(null);
 
     private async void AddSecondary_Tapped(object sender, TappedEventArgs e) => await ShowContactForm(null);
-
-    private async void TestMode_Clicked(object sender, EventArgs e)
-    {
-        if (AppSession.Account == null)
-            return;
-
-        var confirm = await Ui.Confirm(
-            "Modo de Ensayo",
-            "Se registrará un evento de prueba en el historial local. No se envía ningún mensaje ni se contacta a servicios de emergencia.",
-            "Registrar prueba",
-            "Cancelar");
-
-        if (!confirm)
-            return;
-
-        var account = AppSession.Account;
-        AlertService.Send(
-            EmergencyType.Test,
-            "Prueba local registrada por la usuaria. Esta no es una emergencia real.",
-            LocationService.Address,
-            LocationService.Latitude,
-            LocationService.Longitude,
-            AlertStatus.Resolved,
-            notifiedContacts: 0,
-            notes: $"Ensayo enviado a {account.Contacts.Count} contacto(s). Servicios 911 no contactados.");
-
-        AlertCreated?.Invoke();
-        await Ui.Alert(
-            "Ensayo completado",
-            $"La prueba quedó registrada en el historial local. No se enviaron mensajes a {account.Contacts.Count} contacto(s).",
-            "Aceptar");
-    }
 
     private async void Sync_Tapped(object sender, TappedEventArgs e)
     {

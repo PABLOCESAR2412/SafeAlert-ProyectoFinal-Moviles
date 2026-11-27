@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using SafeAlert.Helpers;
 using SafeAlert.Models;
 
@@ -7,117 +5,58 @@ namespace SafeAlert.Services;
 
 public static class DataStore
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        WriteIndented = true,
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() }
-    };
-
+    private static readonly object Gate = new();
     private static AppData? _data;
 
-    public static string StoragePath { get; } = BuildPath();
+    public static string StoragePath { get; } = Path.Combine(BuildDirectory(), "safealert.db3");
 
     public static AppData Data
     {
         get
         {
-            EnsureLoaded();
-            return _data!;
-        }
-    }
-
-    private static string BuildPath()
-    {
-        try
-        {
-            var dir = Path.Combine(FileSystem.AppDataDirectory, "SafeAlert");
-            Directory.CreateDirectory(dir);
-            return Path.Combine(dir, "safealert.json");
-        }
-        catch
-        {
-            var dir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "SafeAlert");
-            Directory.CreateDirectory(dir);
-            return Path.Combine(dir, "safealert.json");
-        }
-    }
-
-    private static void EnsureLoaded()
-    {
-        if (_data != null)
-            return;
-
-        try
-        {
-            if (File.Exists(StoragePath))
+            lock (Gate)
             {
-                var json = File.ReadAllText(StoragePath);
-                _data = JsonSerializer.Deserialize<AppData>(json, JsonOptions);
-            }
-        }
-        catch
-        {
-            try
-            {
-                var backup = StoragePath + ".bak";
-                if (File.Exists(StoragePath))
-                    File.Copy(StoragePath, backup, true);
-            }
-            catch
-            {
-                // La copia de seguridad es opcional.
-            }
-        }
+                if (_data is not null)
+                    return _data;
 
-        _data ??= new AppData();
-
-        // Normaliza textos guardados por versiones anteriores.
-        foreach (var user in _data.Users)
-        {
-            foreach (var contact in user.Contacts)
-            {
-                if (contact.ActionMode is "SMS + GPS en vivo" or "Verificado 24/7" or "SMS + ubicación" or "Llamada Inmediata")
-                    contact.ActionMode = "WhatsApp + SMS con ubicación";
-
-                contact.FooterNote = contact.FooterNote switch
+                var legacyPath = Path.ChangeExtension(StoragePath, ".json");
+                var data = LocalDatabase.LoadOrImport(StoragePath, legacyPath);
+                if (data.Users.Count == 0)
                 {
-                    "Notificación en altavoz" => "Recibe WhatsApp con ubicación",
-                    "Seguimiento 60 min" => "Respaldo por SMS",
-                    "Control de acceso y rondín" => "Contacto institucional",
-                    _ => contact.FooterNote
-                };
+                    data.Users.Add(CreateDemoAccount());
+                    data.LastEmail = data.Users[0].Email;
+                    LocalDatabase.Save(StoragePath, data);
+                }
+
+                _data = data;
+                return data;
             }
         }
+    }
 
-        if (_data.Users.Count == 0)
+    private static string BuildDirectory()
+    {
+        string directory;
+        try
         {
-            _data.Users.Add(CreateDemoAccount());
-            _data.LastEmail = _data.Users[0].Email;
-            Save();
+            directory = Path.Combine(FileSystem.AppDataDirectory, "SafeAlert");
+            Directory.CreateDirectory(directory);
         }
+        catch
+        {
+            directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SafeAlert");
+            Directory.CreateDirectory(directory);
+        }
+        return directory;
     }
 
     public static void Save()
     {
-        if (_data == null)
-            return;
-
-        try
+        lock (Gate)
         {
-            var directory = Path.GetDirectoryName(StoragePath);
-            if (!string.IsNullOrWhiteSpace(directory))
-                Directory.CreateDirectory(directory);
-
-            var temp = StoragePath + ".tmp";
-            File.WriteAllText(temp, JsonSerializer.Serialize(_data, JsonOptions));
-            File.Move(temp, StoragePath, true);
-        }
-        catch
-        {
-            // En una demo no interrumpimos la experiencia si falla el guardado.
+            if (_data is not null)
+                LocalDatabase.Save(StoragePath, _data);
         }
     }
 

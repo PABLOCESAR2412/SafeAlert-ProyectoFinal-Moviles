@@ -14,7 +14,8 @@ public static class AlertService
         AlertStatus status = AlertStatus.InProgress,
         int? notifiedContacts = null,
         int? responseMinutes = null,
-        string? notes = null)
+        string? notes = null,
+        bool? hasVerifiedLocation = null)
     {
         var account = AppSession.Account;
         if (account == null)
@@ -31,8 +32,9 @@ public static class AlertService
             Address = address,
             Latitude = latitude,
             Longitude = longitude,
+            HasVerifiedLocation = hasVerifiedLocation,
             CreatedAt = DateTime.Now,
-            NotifiedContacts = notifiedContacts ?? account.Contacts.Count,
+            NotifiedContacts = notifiedContacts ?? 0,
             ResponseMinutes = responseMinutes,
             AudioRecorded = false,
             Notes = notes ?? string.Empty
@@ -46,12 +48,6 @@ public static class AlertService
     public static void ChangeStatus(AlertRecord alert, AlertStatus status)
     {
         alert.Status = status;
-
-        if (status == AlertStatus.Resolved && !alert.ResponseMinutes.HasValue &&
-            alert.Type != EmergencyType.Test)
-        {
-            alert.ResponseMinutes = Random.Shared.Next(4, 12);
-        }
 
         DataStore.Save();
     }

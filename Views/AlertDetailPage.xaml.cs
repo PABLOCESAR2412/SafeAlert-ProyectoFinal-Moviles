@@ -29,11 +29,6 @@ public partial class AlertDetailPage : ContentPage
         MapAddressLabel.Text = _alert.Address;
         CoordinatesLabel.Text = _alert.CoordinatesText;
         MessageLabel.Text = _alert.Message;
-        ContactsLabel.Text = _alert.ContactsLine;
-        ResponseLabel.Text = _alert.ResponseLine;
-        AudioLabel.Text = _alert.AudioRecorded
-            ? "Grabación de audio disponible"
-            : "Sin audio grabado";
         NotesLabel.Text = _alert.Notes;
         NotesCard.IsVisible = !string.IsNullOrWhiteSpace(_alert.Notes);
         MapCard.IsVisible = _alert.ShowMap;
@@ -49,7 +44,7 @@ public partial class AlertDetailPage : ContentPage
         {
             AlertStatus.InProgress => "Evento en curso • seguimiento activo",
             AlertStatus.FalseAlarm => "Evento cerrado como falsa alarma",
-            _ => "Reporte local y trazable"
+            _ => "Registro local de la alerta"
         };
 
         var isOpen = _alert.Status == AlertStatus.InProgress;

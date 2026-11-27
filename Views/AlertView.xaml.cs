@@ -1,6 +1,5 @@
 using System.Globalization;
 using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Controls.Shapes;
 using SafeAlert.Helpers;
 using SafeAlert.Models;
@@ -56,6 +55,7 @@ public partial class AlertView : ContentView, IRefreshable
 
     private void UpdateTypeSelection()
     {
+        NearbyPoliceButton.IsVisible = _type == EmergencyType.Harassment;
         ApplyCard(PanicCard, PanicIcon, PanicTitle, PanicSubtitle, "#B91C1C", _type == EmergencyType.Panic);
         ApplyCard(MedicalCard, MedicalIcon, MedicalTitle, MedicalSubtitle, "#DC2626", _type == EmergencyType.Medical);
         ApplyCard(HarassmentCard, HarassmentIcon, HarassmentTitle, HarassmentSubtitle, "#0074D5", _type == EmergencyType.Harassment);
@@ -79,6 +79,16 @@ public partial class AlertView : ContentView, IRefreshable
 
     private void UpdateLocationLabels()
     {
+        if (!PermissionService.LocationEnabled || LocationService.UsingSimulation)
+        {
+            MapImage.Source = null;
+            MapPrecisionLabel.Text = PermissionService.LocationEnabled ? "Ubicación sin verificar" : "GPS desactivado en SafeAlert";
+            AddressLabel.Text = "Ubicación no disponible";
+            CoordinatesLabel.Text = string.Empty;
+            NearbyLabel.Text = string.Empty;
+            return;
+        }
+
         MapPrecisionLabel.Text = LocationService.PrecisionText;
         AddressLabel.Text = LocationService.Address;
         CoordinatesLabel.Text = LocationService.CoordinatesText;
@@ -97,7 +107,7 @@ public partial class AlertView : ContentView, IRefreshable
             using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
             using var response = await client.GetAsync(url);
 
-            if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode || !PermissionService.LocationEnabled)
                 return;
 
             MapImage.Source = ImageSource.FromUri(new Uri(url));
@@ -108,29 +118,14 @@ public partial class AlertView : ContentView, IRefreshable
         }
     }
 
-    private async void CallEmergency_Tapped(object sender, TappedEventArgs e)
-    {
-        var call = await Ui.Confirm(
-            "Llamar al 911",
-            "Se abrirá el marcador del teléfono con el número 911. La llamada la confirmas tú.",
-            "Abrir marcador",
-            "Cancelar");
-
-        if (!call)
-            return;
-
-        try
-        {
-            PhoneDialer.Default.Open("911");
-        }
-        catch
-        {
-            await Ui.Alert("Teléfono", "No se pudo abrir el marcador en este dispositivo.", "Aceptar");
-        }
-    }
-
     private async void OpenMap_Tapped(object sender, TappedEventArgs e)
     {
+        if (!PermissionService.LocationEnabled || LocationService.UsingSimulation)
+        {
+            await Ui.Alert("Ubicación no disponible", "Activa el GPS en Perfil y actualiza tu posición.", "Entendido");
+            return;
+        }
+
         try
         {
             await Launcher.Default.OpenAsync(new Uri(
@@ -140,6 +135,22 @@ public partial class AlertView : ContentView, IRefreshable
         {
             await Ui.Alert("Mapa", "No se pudo abrir la aplicación de mapas.", "Aceptar");
         }
+    }
+
+    private async void NearbyPolice_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var query = Uri.EscapeDataString("Unidad de Policía Comunitaria UPC cerca de mí");
+            if (await Launcher.Default.OpenAsync(new Uri($"https://www.google.com/maps/search/?api=1&query={query}")))
+                return;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+
+        await Ui.Alert("Mapa", "No se pudo abrir Google Maps en este dispositivo.", "Aceptar");
     }
 
     private void BuildRecipientAvatars()
@@ -226,11 +237,17 @@ public partial class AlertView : ContentView, IRefreshable
 
         RecipientsSubtitle.Text = contacts.Count == 0
             ? "Agrega contactos para compartir tu ubicación"
-            : "WhatsApp con ubicación y SMS de respaldo";
+            : "SMS asistido al contacto principal";
     }
 
     private async void MapRecenter_Tapped(object sender, TappedEventArgs e)
     {
+        if (!PermissionService.LocationEnabled)
+        {
+            await Ui.Alert("GPS desactivado", "Actívalo en Perfil → Sensores y permisos.", "Entendido");
+            return;
+        }
+
         if (_refreshingLocation)
             return;
 
@@ -245,8 +262,8 @@ public partial class AlertView : ContentView, IRefreshable
             if (!success)
             {
                 await Ui.Alert(
-                    "Ubicación de demostración",
-                    "No se pudo obtener el GPS del equipo. Se mantiene la ubicación de demostración (Av. Amazonas, Quito) para probar la alerta.",
+                    "Ubicación no disponible",
+                    "No se pudo obtener la posición. Revisa el GPS y el permiso de ubicación.",
                     "Entendido");
             }
             else
@@ -314,55 +331,44 @@ public partial class AlertView : ContentView, IRefreshable
 
         try
         {
-            var granted = await PermissionService.EnsureLocationAsync();
-            if (granted)
-                await LocationService.RefreshAsync();
-            else
-                await Ui.Alert(
-                    "Permiso de ubicación",
-                    "Sin permiso de ubicación se enviará la última posición conocida. Puedes concederlo desde Configuración de Android.",
-                    "Entendido");
+            var account = AppSession.Account;
+            if (account is null)
+                return;
+
+            var hasLocation = await LocationService.RefreshAsync();
+            var smsText = hasLocation
+                ? SharingService.BuildMessage(message, LocationService.Latitude, LocationService.Longitude)
+                : $"{message}\n\nUbicación no disponible.";
 
             var alert = AlertService.Send(
                 _type,
                 message,
-                LocationService.Address,
-                LocationService.Latitude,
-                LocationService.Longitude,
-                notes: "Alerta emitida desde el módulo de envío con mapa y ubicación compartida.");
+                hasLocation ? LocationService.Address : "Ubicación no disponible",
+                hasLocation ? LocationService.Latitude : 0,
+                hasLocation ? LocationService.Longitude : 0,
+                notes: "Alerta registrada en el dispositivo.",
+                hasVerifiedLocation: hasLocation);
 
-            var account = AppSession.Account!;
-            var share = await SharingService.DispatchAsync(
-                account,
-                message,
-                LocationService.Latitude,
-                LocationService.Longitude);
-
-            var summary = share.WhatsAppSent
-                ? $"WhatsApp abierto con {share.PrimaryName} y tu ubicación.\nConfirma el envío dentro de WhatsApp."
-                : $"{share.Error}\nSe preparará un SMS para tus contactos.";
-
-            if (share.HasPendingSms)
+            var target = SharingService.FindSmsContact(account);
+            if (target is null)
             {
-                var sendSms = await Ui.Confirm(
-                    "Alerta registrada",
-                    $"{summary}\n\n¿Enviar SMS a {share.SmsPending.Count} contacto(s) más con el mensaje de ayuda?",
-                    "Enviar SMS",
-                    "Ahora no");
-
-                if (sendSms)
-                {
-                    var composed = await SharingService.ComposeSmsAsync(share.SmsPending, message);
-                    if (!composed)
-                        await Ui.Alert("SMS", "No se pudo abrir la aplicación de mensajes.", "Aceptar");
-                }
+                await Ui.Alert("Alerta registrada", "Agrega un contacto de emergencia para preparar un SMS.", "Aceptar");
             }
-            else
+            else if (await Ui.Confirm(
+                "Alerta registrada",
+                hasLocation
+                    ? $"¿Abrir Mensajes para {target.Name} con tu ubicación? Confirma el envío dentro de Mensajes."
+                    : $"No se obtuvo el GPS. ¿Abrir Mensajes para {target.Name} sin coordenadas?",
+                "Abrir Mensajes",
+                "Ahora no"))
             {
-                await Ui.Alert(
-                    "Alerta registrada",
-                    $"{summary}\n\nUbicación incluida: {LocationService.Address}.",
-                    "Aceptar");
+                var opened = await SharingService.ComposeSmsAsync(target, smsText);
+                alert.Notes = opened
+                    ? "Se abrió el compositor de SMS. Entrega sin confirmar."
+                    : "No se pudo abrir el compositor de SMS.";
+                DataStore.Save();
+                if (!opened)
+                    await Ui.Alert("SMS no preparado", "Comprueba que tienes una aplicación de SMS habilitada. La alerta queda en el historial.", "Aceptar");
             }
 
             _messageIsDefault = true;
@@ -376,7 +382,7 @@ public partial class AlertView : ContentView, IRefreshable
         }
         catch (Exception ex)
         {
-            await Ui.Alert("No se pudo enviar", ex.Message, "Aceptar");
+            await Ui.Alert("No se pudo completar la alerta", ex.Message, "Aceptar");
         }
         finally
         {

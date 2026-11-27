@@ -74,7 +74,7 @@
                 </Grid>
             </Border>
 
-            <Label Text="SafeAlert"
+            <Label Text="Safe Alert"
                    Style="{StaticResource H1}"
                    FontSize="34"
                    HorizontalOptions="Center" />
@@ -313,7 +313,7 @@
                             <Entry x:Name="RegPhoneEntry"
                                    Grid.Column="1"
                                    Style="{StaticResource InputEntry}"
-                                   Placeholder="+593 99 123 4567"
+                                   Placeholder="099 123 4567"
                                    Keyboard="Telephone"
                                    ReturnType="Next" />
                         </Grid>

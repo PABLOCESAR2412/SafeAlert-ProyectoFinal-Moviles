@@ -14,6 +14,7 @@ public class AlertRecord
     public string Address { get; set; } = string.Empty;
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public bool? HasVerifiedLocation { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public int NotifiedContacts { get; set; }
     public int? ResponseMinutes { get; set; }
@@ -54,7 +55,6 @@ public class AlertRecord
     public string StatusText => Status switch
     {
         AlertStatus.Resolved when Type == EmergencyType.Test => "Prueba exitosa",
-        AlertStatus.Resolved when Type == EmergencyType.Medical => "Atendida y Cerrada",
         AlertStatus.Resolved => "Finalizada",
         AlertStatus.FalseAlarm => "Falsa alarma",
         _ => "En curso"
@@ -95,7 +95,7 @@ public class AlertRecord
     [JsonIgnore]
     public string ContactsLine => NotifiedContacts switch
     {
-        0 => "Sin contactos notificados",
+        0 => "Entrega sin confirmar",
         1 => "1 contacto incluido en la alerta",
         _ => $"{NotifiedContacts} contactos incluidos en la alerta"
     };
@@ -121,7 +121,7 @@ public class AlertRecord
     public bool HasResponse => ResponseMinutes.HasValue || Type == EmergencyType.Test;
 
     [JsonIgnore]
-    public bool ShowMap => Type is EmergencyType.Medical or EmergencyType.Harassment
+    public bool ShowMap => HasVerifiedLocation != false && Type is EmergencyType.Medical or EmergencyType.Harassment
         or EmergencyType.Robbery or EmergencyType.Police or EmergencyType.Panic
         or EmergencyType.Silent or EmergencyType.WalkSafe;
 
@@ -132,9 +132,7 @@ public class AlertRecord
     public bool IsInProgress => Status == AlertStatus.InProgress;
 
     [JsonIgnore]
-    public string ActionText => AudioRecorded
-        ? "Ver reporte completo y audio grabado"
-        : "Ver reporte completo";
+    public string ActionText => "Ver detalle";
 
     [JsonIgnore]
     public string ActionBackgroundColor => Type == EmergencyType.Medical ? "#0074D5" : "#F3F4F6";
@@ -143,5 +141,7 @@ public class AlertRecord
     public string ActionTextColor => Type == EmergencyType.Medical ? "#FFFFFF" : "#1F3864";
 
     [JsonIgnore]
-    public string CoordinatesText => $"Lat: {Latitude:0.0000}, Lon: {Longitude:0.0000}";
+    public string CoordinatesText => HasVerifiedLocation == false
+        ? "Ubicación no disponible"
+        : $"Lat: {Latitude:0.0000}, Lon: {Longitude:0.0000}";
 }

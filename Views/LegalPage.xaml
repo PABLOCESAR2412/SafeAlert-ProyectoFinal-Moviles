@@ -102,7 +102,7 @@
                         <Label FontSize="12"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap"
-                               Text="Solo con los contactos que tú registras. Al enviar una alerta se abre WhatsApp con un enlace de Google Maps para el contacto principal y se prepara un SMS para los demás. SafeAlert no envía datos a ECU911, no usa la API de WhatsApp y no tiene acceso a tus conversaciones. Tu operador y Google Maps tratan el mensaje según sus propias políticas." />
+                               Text="SafeAlert puede preparar un SMS para el contacto principal. La persona decide si lo envía en Mensajes. El enlace de Google Maps se incluye cuando hay una lectura reciente de ubicación. Si se carga el mapa estático, se consultan las coordenadas con el proveedor del mapa." />
                     </VerticalStackLayout>
                 </Border>
 
@@ -115,7 +115,7 @@
                         <Label FontSize="12"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap"
-                               Text="• Ubicación: para mostrar tu posición y adjuntarla a la alerta.&#10;• Contactos: solo cuando usas «Elegir de mis contactos» para no escribir el número.&#10;• Acelerómetro: detecta sacudidas fuertes mientras la app está abierta; no requiere permiso especial en Android.&#10;• Huella digital: desbloquea el acceso rápido con la biometría del sistema.&#10;Puedes revocar cualquier permiso desde Ajustes de Android; la app seguirá funcionando con datos manuales." />
+                               Text="• Ubicación: para mostrar tu posición y adjuntarla a la alerta.&#10;• Contactos: solo cuando usas «Elegir de mis contactos» para no escribir el número.&#10;• Huella digital: desbloquea el acceso rápido con la biometría del sistema.&#10;Puedes revocar cualquier permiso desde Ajustes de Android; la app seguirá funcionando con datos manuales." />
                     </VerticalStackLayout>
                 </Border>
 
@@ -154,7 +154,7 @@
                         <Label FontSize="12"
                                TextColor="{StaticResource TextPrimary}"
                                LineBreakMode="WordWrap"
-                               Text="SafeAlert es una herramienta de apoyo y no reemplaza a los servicios de emergencia. No garantiza la entrega de mensajes: depende de la cobertura, la batería, el GPS y la confirmación que hagas en WhatsApp o en tu app de mensajes. No debe usarse como único medio para pedir ayuda en una situación de riesgo." />
+                               Text="SafeAlert es una herramienta de apoyo y no reemplaza a los servicios de emergencia. No garantiza la entrega de mensajes: depende de la cobertura, la batería, el GPS y la confirmación que hagas en tu app de mensajes. No debe usarse como único medio para pedir ayuda en una situación de riesgo." />
                     </VerticalStackLayout>
                 </Border>
 

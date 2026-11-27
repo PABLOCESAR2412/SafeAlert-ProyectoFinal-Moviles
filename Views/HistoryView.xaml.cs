@@ -234,11 +234,6 @@ public partial class HistoryView : ContentView, IRefreshable
 
         if (alert.Type == EmergencyType.Medical)
         {
-            infoStack.Children.Add(BuildInfoRow(Icons.Groups, alert.ContactsLine, "#1F3864"));
-            infoStack.Children.Add(BuildInfoRow(
-                alert.HasResponse ? Icons.Ambulance : Icons.Schedule,
-                alert.ResponseLine,
-                alert.HasResponse ? "#1D4ED8" : "#6B7280"));
         }
         else
         {
@@ -253,7 +248,6 @@ public partial class HistoryView : ContentView, IRefreshable
                     alert.Type == EmergencyType.Test ? "#15803D" : "#0074D5"));
             }
 
-            infoStack.Children.Add(BuildInfoRow(Icons.Groups, alert.ContactsLine, "#1F3864"));
         }
 
         info.Content = infoStack;

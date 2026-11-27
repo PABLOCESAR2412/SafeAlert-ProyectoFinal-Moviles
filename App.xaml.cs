@@ -34,7 +34,7 @@ public partial class App : Application
 
         return new Window(root)
         {
-            Title = "SafeAlert - Seguridad personal",
+            Title = "Safe Alert - Seguridad personal",
             Width = 440,
             Height = 920
         };

@@ -148,49 +148,6 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Modo de ensayo -->
-            <Border BackgroundColor="{StaticResource Navy}"
-                    StrokeThickness="0"
-                    Padding="16"
-                    StrokeShape="RoundRectangle 16">
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="11">
-                    <Border WidthRequest="42"
-                            HeightRequest="42"
-                            BackgroundColor="#2C4A7A"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 12"
-                            VerticalOptions="Center">
-                        <Label Text="&#xF068;"
-                               FontFamily="MaterialIcons"
-                               FontSize="22"
-                               TextColor="#93C5FD"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Border>
-                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                        <Label Text="Modo de Ensayo"
-                               FontFamily="InterBold"
-                               FontSize="15"
-                               TextColor="White" />
-                        <Label Text="Registra una prueba local. No activa servicios de emergencia ni envía mensajes."
-                               FontSize="11"
-                               TextColor="#CBD5E1"
-                               LineBreakMode="WordWrap" />
-                    </VerticalStackLayout>
-                    <Button Grid.Column="2"
-                            Text="Probar"
-                            BackgroundColor="White"
-                            TextColor="{StaticResource Navy}"
-                            FontFamily="InterBold"
-                            FontSize="12"
-                            HeightRequest="38"
-                            Padding="14,0"
-                            CornerRadius="9"
-                            VerticalOptions="Center"
-                            Clicked="TestMode_Clicked" />
-                </Grid>
-            </Border>
-
         </VerticalStackLayout>
     </ScrollView>
 

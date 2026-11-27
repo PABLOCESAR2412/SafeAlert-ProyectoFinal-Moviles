@@ -65,10 +65,12 @@ public static class AppSession
         }
 
         var digits = Validation.DigitsOnly(identifier);
+        var normalizedPhone = Validation.NormalizePhone(identifier);
         var user = DataStore.Data.Users.FirstOrDefault(u =>
             u.Email.Equals(identifier, StringComparison.OrdinalIgnoreCase) ||
             (!string.IsNullOrWhiteSpace(digits) &&
-             Validation.DigitsOnly(u.Profile.Phone).EndsWith(digits, StringComparison.Ordinal)));
+             ((normalizedPhone is not null && Validation.NormalizePhone(u.Profile.Phone) == normalizedPhone) ||
+              Validation.DigitsOnly(u.Profile.Phone).EndsWith(digits, StringComparison.Ordinal))));
 
         if (user == null)
         {

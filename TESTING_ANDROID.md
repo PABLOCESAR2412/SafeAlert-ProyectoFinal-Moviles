@@ -1,6 +1,17 @@
 # Prueba de SafeAlert en Android físico
 
-## Objetivo
+## Alcance de la demo SMS
+
+El registro P01–P20 corresponde al historial de pruebas del flujo anterior. Para la demo actual, SafeAlert prepara un SMS al contacto principal y deja la confirmación en Mensajes. El enlace de mapa se añade cuando se obtuvo una posición para la alerta. WhatsApp y la entrega de SMS no forman parte de los resultados certificados.
+
+| Caso nuevo | Resultado esperado | Estado |
+| --- | --- | --- |
+| SMS-D1 | Con un contacto de prueba, Alerta queda en Historial y Mensajes muestra el destinatario y el texto. Salir sin tocar Enviar. | Pendiente en Android físico |
+| SMS-D2 | Con GPS no disponible, el texto explica la ausencia de coordenadas. | Pendiente en Android físico |
+| SMS-D3 | Con agenda vacía, se registra la alerta y se pide agregar un contacto. | Pendiente en Android físico |
+| SMS-D4 | Al regresar de Mensajes sin enviar, el historial mantiene la entrega sin confirmar. | Pendiente en Android físico |
+
+## Objetivo histórico
 
 Validar permisos reales, biometría, GPS, contactos, envío WhatsApp/SMS, sensores, persistencia local, privacidad y aviso de actualización en un teléfono Android real.
 
@@ -73,6 +84,7 @@ Validar permisos reales, biometría, GPS, contactos, envío WhatsApp/SMS, sensor
 
 Las capturas se guardan en `C:\Users\pablo\Downloads\safealert_capturas\` y se incluyen en el PDF de defensa: inicio con ubicación real, mapa de Alerta, permiso de contactos, agenda del teléfono, contacto autocompletado, biometría, banner de actualización, privacidad y términos, icono y perfil.
 
-## Nota importante
+## Nota histórica sobre el flujo anterior
 
 SafeAlert **no** envía datos a ECU911 ni usa la API de WhatsApp: abre WhatsApp con un enlace de Google Maps para el contacto principal y prepara un SMS para los demás. La llamada al 911 abre el marcador y la confirma la usuaria. Los datos se guardan en el dispositivo; no hay backend ni cifrado de extremo a extremo en esta versión.
+

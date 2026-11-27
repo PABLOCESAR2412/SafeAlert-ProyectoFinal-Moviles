@@ -120,7 +120,7 @@ public partial class LoginPage : ContentPage
     {
         ClearErrors();
         var name = RegNameEntry.Text?.Trim() ?? string.Empty;
-        var phone = RegPhoneEntry.Text?.Trim() ?? string.Empty;
+        var phone = Validation.NormalizePhone(RegPhoneEntry.Text) ?? string.Empty;
         var email = RegEmailEntry.Text?.Trim() ?? string.Empty;
         var password = RegPassEntry.Text ?? string.Empty;
         var confirm = RegConfirmEntry.Text ?? string.Empty;
@@ -134,7 +134,7 @@ public partial class LoginPage : ContentPage
 
         if (!Validation.IsValidPhone(phone))
         {
-            ShowError(RegPhoneError, "Ingresa un teléfono de 10 a 15 dígitos.");
+            ShowError(RegPhoneError, "Ingresa un celular como 0991234567 o un fijo como 022345678.");
             hasError = true;
         }
 

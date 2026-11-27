@@ -37,8 +37,6 @@ public static class HistoryExporter
             builder.AppendLine($"Estado:      {alert.StatusText}");
             builder.AppendLine($"Ubicación:   {alert.Address}");
             builder.AppendLine($"Coordenadas: {alert.CoordinatesText}");
-            builder.AppendLine($"Contactos:   {alert.NotifiedContacts} notificados");
-            builder.AppendLine($"Respuesta:   {alert.ResponseLine}");
             builder.AppendLine($"Mensaje:     {alert.Message}");
 
             if (!string.IsNullOrWhiteSpace(alert.Notes))
@@ -86,8 +84,6 @@ public static class HistoryExporter
             rawLines.Add($"Estado:      {alert.StatusText}");
             rawLines.Add($"Ubicacion:   {alert.Address}");
             rawLines.Add($"Coordenadas: {alert.CoordinatesText}");
-            rawLines.Add($"Contactos:   {alert.NotifiedContacts} notificados");
-            rawLines.Add($"Respuesta:   {alert.ResponseLine}");
             rawLines.Add($"Mensaje:     {alert.Message}");
 
             if (!string.IsNullOrWhiteSpace(alert.Notes))

@@ -78,7 +78,7 @@
                                    TextColor="{StaticResource TextPrimary}"
                                    LineBreakMode="WordWrap" />
                             <Label x:Name="ProfilePhoneLabel"
-                                   Text="+593 98 765 4321"
+                                   Text="098 765 4321"
                                    FontSize="12"
                                    TextColor="{StaticResource TextMuted}" />
                             <Label x:Name="ProfileEmailLabel"
@@ -287,161 +287,49 @@
                         </VerticalStackLayout>
                     </Grid>
 
-                    <!-- Sacudida -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Label Text="&#xF2CB;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Detección de sacudidas SOS"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Acelerómetro: agita el teléfono para alertar"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Switch x:Name="ShakeSwitch"
-                                Grid.Column="2"
-                                Style="{StaticResource SwitchStyle}"
-                                Toggled="ShakeSwitch_Toggled"
-                                VerticalOptions="Center" />
-                    </Grid>
-
-                    <Border BackgroundColor="{StaticResource BlueTint}"
-                            StrokeThickness="0"
-                            Padding="10,7"
-                            StrokeShape="RoundRectangle 9">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TestShake_Tapped" />
-                        </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="7">
-                            <Label Text="&#xE51E;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="17"
-                                   TextColor="{StaticResource Blue}" />
-                            <Label Grid.Column="1"
-                                   Text="Probar detección de sacudida (simulación)"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="11"
-                                   TextColor="{StaticResource Navy}"
-                                   VerticalOptions="Center" />
-                            <Label Grid.Column="2"
-                                   Text="&#xE5CC;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="18"
-                                   TextColor="{StaticResource Navy}"
-                                   VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-
-                    <BoxView Style="{StaticResource Divider}" />
-
-                    <!-- Caídas -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="FallDetection_Tapped" />
-                        </Grid.GestureRecognizers>
-                        <Label Text="&#xE6DA;"
-                               FontFamily="MaterialIcons"
-                               FontSize="21"
-                               TextColor="{StaticResource Navy}"
-                               VerticalOptions="Center" />
-                        <VerticalStackLayout Grid.Column="1" Spacing="1">
-                            <Label Text="Sensor de movimiento"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Acelerómetro: detecta sacudidas"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xE5CC;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
-                    </Grid>
 
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Privacidad y datos -->
             <Border Style="{StaticResource Card}" Padding="14">
-                <VerticalStackLayout Spacing="11">
-                    <Label Text="Privacidad y Datos"
-                           FontFamily="InterBold"
-                           FontSize="16"
-                           Margin="0,0,0,1" />
-
-                    
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Privacy_Tapped" />
-                        </Grid.GestureRecognizers>
-                        <Border WidthRequest="38"
-                                HeightRequest="38"
-                                BackgroundColor="{StaticResource SurfaceAlt}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 10">
-                            <Label Text="&#xF0DC;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="20"
-                                   TextColor="{StaticResource Navy}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                            <Label Text="Privacidad y Términos Legales"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label Text="Datos locales y derechos del usuario"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
+                <VerticalStackLayout Spacing="9">
+                    <Label Text="Sensores y permisos" FontFamily="InterBold" FontSize="16" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                            <Label Text="Acelerómetro" FontFamily="InterSemiBold" FontSize="13" />
+                            <Label Text="Avisa ante un movimiento brusco con SafeAlert en pantalla." FontSize="12" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xE5CC;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
+                        <Switch x:Name="MovementSwitch" Grid.Column="1"
+                                SemanticProperties.Description="Acelerómetro"
+                                Toggled="SensorSetting_Toggled" />
                     </Grid>
-
-                    <BoxView Style="{StaticResource Divider}" />
-
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="9">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Update_Tapped" />
-                        </Grid.GestureRecognizers>
-                        <Border WidthRequest="38"
-                                HeightRequest="38"
-                                BackgroundColor="{StaticResource SurfaceAlt}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 10">
-                            <Label Text="&#xF090;"
-                                   FontFamily="MaterialIcons"
-                                   FontSize="20"
-                                   TextColor="{StaticResource Navy}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                            <Label Text="Actualizaciones"
-                                   FontFamily="InterSemiBold"
-                                   FontSize="13" />
-                            <Label x:Name="UpdateSubtitleLabel"
-                                   Text="Versión instalada"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                            <Label Text="Ubicación (GPS)" FontFamily="InterSemiBold" FontSize="13" />
+                            <Label Text="Adjunta tu ubicación al SMS cuando está disponible." FontSize="12" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xE5CC;"
-                               FontFamily="MaterialIcons"
-                               FontSize="20"
-                               TextColor="{StaticResource TextSoft}"
-                               VerticalOptions="Center" />
+                        <Switch x:Name="LocationSwitch" Grid.Column="1"
+                                SemanticProperties.Description="Ubicación (GPS)"
+                                Toggled="SensorSetting_Toggled" />
                     </Grid>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                            <Label Text="Acceso a la agenda" FontFamily="InterSemiBold" FontSize="13" />
+                            <Label Text="Permite elegir un contacto del dispositivo. También puedes ingresarlo a mano." FontSize="12" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="ContactsSwitch" Grid.Column="1"
+                                SemanticProperties.Description="Acceso a la agenda"
+                                Toggled="SensorSetting_Toggled" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="14">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Privacidad y datos" FontFamily="InterBold" FontSize="16" />
+                    <Button Text="Privacidad y términos legales"
+                            Style="{StaticResource SoftButton}"
+                            Clicked="Privacy_Clicked" />
                 </VerticalStackLayout>
             </Border>
 

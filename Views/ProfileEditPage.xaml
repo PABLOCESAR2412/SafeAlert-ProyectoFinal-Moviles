@@ -97,7 +97,7 @@
                         <Entry x:Name="PhoneEntry"
                                Grid.Column="1"
                                Style="{StaticResource InputEntry}"
-                               Placeholder="+593 99 123 4567"
+                               Placeholder="099 123 4567"
                                Keyboard="Telephone"
                                ReturnType="Next" />
                     </Grid>
@@ -204,7 +204,7 @@
                             <Entry x:Name="DoctorPhoneEntry"
                                    Grid.Column="1"
                                    Style="{StaticResource InputEntry}"
-                                   Placeholder="+593 98 112 2334"
+                                   Placeholder="098 112 2334"
                                    Keyboard="Telephone"
                                    ReturnType="Done" />
                         </Grid>
@@ -223,7 +223,7 @@
                                    TextColor="{StaticResource RedDark}"
                                    VerticalOptions="Start" />
                             <Label Grid.Column="1"
-                                   Text="Esta información aparecerá en la pantalla de emergencia y se enviará a los servicios médicos cuando actives el SOS."
+                                   Text="La ficha se guarda en este dispositivo. Usa Llamar al médico en Perfil para abrir el marcador con el número guardado."
                                    FontSize="11"
                                    TextColor="#991B1B"
                                    LineBreakMode="WordWrap" />

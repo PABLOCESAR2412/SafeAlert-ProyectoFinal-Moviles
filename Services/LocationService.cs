@@ -17,10 +17,13 @@ public static class LocationService
     {
         try
         {
+            if (!await PermissionService.EnsureLocationAsync())
+                return false;
+
             var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(6));
             var location = await Geolocation.Default.GetLocationAsync(request);
 
-            if (location == null)
+            if (location == null || !PermissionService.LocationEnabled)
                 return false;
 
             Latitude = location.Latitude;
@@ -29,13 +32,15 @@ public static class LocationService
                 ? $"±{Math.Round(location.Accuracy.Value)} m"
                 : "±15 m";
             UsingSimulation = false;
+            Address = CoordinatesText;
+            Nearby = "Dirección aproximada no disponible";
 
             try
             {
                 var placemarks = await Geocoding.Default.GetPlacemarksAsync(Latitude, Longitude);
                 var place = placemarks?.FirstOrDefault();
 
-                if (place != null)
+                if (place != null && PermissionService.LocationEnabled)
                 {
                     var parts = new[]
                     {
@@ -59,13 +64,23 @@ public static class LocationService
             }
 
             _initialized = true;
-            return true;
+            return PermissionService.LocationEnabled;
         }
         catch
         {
             _initialized = true;
             return false;
         }
+    }
+
+    public static void ClearPosition()
+    {
+        Latitude = 0;
+        Longitude = 0;
+        Address = "Ubicación no disponible";
+        Nearby = string.Empty;
+        Precision = "No disponible";
+        UsingSimulation = true;
     }
 
     public static string CoordinatesText => $"Lat: {Latitude:0.0000}, Lon: {Longitude:0.0000}";

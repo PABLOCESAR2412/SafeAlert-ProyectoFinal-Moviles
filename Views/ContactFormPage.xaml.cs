@@ -38,7 +38,7 @@ public partial class ContactFormPage : ContentPage
             DeleteButton.IsVisible = true;
 
             NameEntry.Text = contact!.Name;
-            PhoneEntry.Text = contact.Phone;
+            PhoneEntry.Text = Validation.NormalizePhone(contact.Phone) ?? contact.Phone;
 
             if (!_relations.Contains(contact.Relation))
                 _relations.Add(contact.Relation);
@@ -62,6 +62,12 @@ public partial class ContactFormPage : ContentPage
 
     private async void PickPhoneContact_Clicked(object sender, EventArgs e)
     {
+        if (!PermissionService.ContactsEnabled)
+        {
+            await Ui.Alert("Agenda desactivada", "Actívala en Perfil → Sensores y permisos o escribe el número manualmente.", "Entendido");
+            return;
+        }
+
         var contact = await DeviceContactService.PickAsync();
 
         if (contact == null)
@@ -74,7 +80,7 @@ public partial class ContactFormPage : ContentPage
         }
 
         NameEntry.Text = contact.Name;
-        PhoneEntry.Text = contact.Phone;
+        PhoneEntry.Text = Validation.NormalizePhone(contact.Phone) ?? contact.Phone;
     }
 
     private async void Save_Clicked(object sender, EventArgs e)
@@ -89,7 +95,7 @@ public partial class ContactFormPage : ContentPage
         }
 
         var name = NameEntry.Text?.Trim() ?? string.Empty;
-        var phone = PhoneEntry.Text?.Trim() ?? string.Empty;
+        var phone = Validation.NormalizePhone(PhoneEntry.Text) ?? string.Empty;
         var relation = RelationPicker.SelectedItem as string ?? string.Empty;
         var priority = PriorityPicker.SelectedItem as string ?? "Secundaria";
         var action = ActionPicker.SelectedItem as string ?? "WhatsApp + SMS con ubicación";
@@ -104,7 +110,7 @@ public partial class ContactFormPage : ContentPage
 
         if (!Validation.IsValidPhone(phone))
         {
-            ShowError(PhoneError, PhoneBorder, "Ingresa un teléfono de 10 a 15 dígitos.");
+            ShowError(PhoneError, PhoneBorder, "Ingresa un celular como 0991234567 o un fijo como 022345678.");
             hasError = true;
         }
 

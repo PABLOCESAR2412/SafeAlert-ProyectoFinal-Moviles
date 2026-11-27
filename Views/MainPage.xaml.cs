@@ -15,16 +15,16 @@ public partial class MainPage : ContentPage
     private readonly Label[] _tabIcons;
     private readonly Label[] _tabLabels;
     private readonly BoxView[] _tabIndicators;
-    private readonly ShakeDetector _shakeDetector = new();
 
     private int _currentTab = -1;
-    private bool _shakePromptOpen;
-    private bool _sensorInfoShown;
-    private UpdateInfo? _pendingUpdate;
+    private readonly ShakeDetector _shakeDetector = new();
+    private bool _monitoringMovement;
+    private bool _movementPromptOpen;
 
     public MainPage(string? initialTab = null)
     {
         InitializeComponent();
+        _shakeDetector.Detected += MovementDetected;
 
         _views = new View[] { _homeView, _alertView, _contactsView, _historyView, _profileView };
         _tabIcons = new[] { Icon0, Icon1, Icon2, Icon3, Icon4 };
@@ -32,13 +32,6 @@ public partial class MainPage : ContentPage
         _tabIndicators = new[] { Indicator0, Indicator1, Indicator2, Indicator3, Indicator4 };
 
         _homeView.NavigateRequested += SwitchTab;
-        _homeView.EmergencyTypeRequested += type =>
-        {
-            _alertView.SelectType(type);
-            SwitchTab(1);
-        };
-        _homeView.AlertSent += () => _historyView.RefreshView();
-
         _alertView.NavigateRequested += SwitchTab;
         _alertView.AlertCreated += () =>
         {
@@ -47,23 +40,20 @@ public partial class MainPage : ContentPage
         };
 
         _contactsView.ContactsChanged += () => _homeView.RefreshView();
-        _contactsView.AlertCreated += () =>
-        {
-            _homeView.RefreshView();
-            _historyView.RefreshView();
-        };
-
         _profileView.LogoutRequested += Logout;
-        _profileView.ShakeSettingChanged += ShakeSettingChanged;
-        _profileView.SimulateShakeRequested += SimulateShake;
-        _profileView.UpdateCheckRequested += () => _ = CheckUpdateAsync();
+        _profileView.MovementSettingChanged += () =>
+        {
+            if (PermissionService.MovementEnabled)
+                StartMovementMonitoring(this, EventArgs.Empty);
+            else
+                StopMovementMonitoring(this, EventArgs.Empty);
+        };
         _profileView.ProfileUpdated += () =>
         {
             UpdateHeader();
             _homeView.RefreshView();
         };
 
-        _shakeDetector.Detected += ShakeDetected;
 
         UpdateHeader();
 
@@ -114,73 +104,69 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        if (Window is { } window)
+        {
+            window.Activated += StartMovementMonitoring;
+            window.Deactivated += StopMovementMonitoring;
+        }
+        StartMovementMonitoring(this, EventArgs.Empty);
         UpdateHeader();
 
-        if (AppSession.Account?.Settings.ShakeDetection == true)
-            _shakeDetector.Start();
 
         await RefreshLocationAsync();
-        await CheckUpdateAsync();
-    }
-
-    private async Task RefreshLocationAsync()
-    {
-        if (!await PermissionService.EnsureLocationAsync())
-            return;
-
-        await LocationService.RefreshAsync();
-        _homeView.RefreshView();
-    }
-
-    private async Task CheckUpdateAsync()
-    {
-        _pendingUpdate = await UpdateService.CheckAsync();
-
-        if (_pendingUpdate == null)
-        {
-            UpdateBanner.IsVisible = false;
-            return;
-        }
-
-        UpdateBannerText.Text = $"Versión {_pendingUpdate.LatestVersion} disponible.";
-        UpdateBanner.IsVisible = true;
-    }
-
-    private async void UpdateBanner_Clicked(object sender, EventArgs e)
-    {
-        if (_pendingUpdate == null)
-        {
-            UpdateBanner.IsVisible = false;
-            return;
-        }
-
-        var info = _pendingUpdate;
-        UpdateService.MarkSeen(info.LatestVersion);
-        UpdateBanner.IsVisible = false;
-
-        var open = await DisplayAlert(
-            "Actualizar SafeAlert",
-            $"Versión instalada: {AppInfo.Current.VersionString}\nVersión disponible: {info.LatestVersion}\n\n{info.Message}\n\nDescarga la nueva APK desde el enlace del administrador y ábrela. Android actualizará SafeAlert conservando tus datos.",
-            "Descargar",
-            "Ahora no");
-
-        if (!open || string.IsNullOrWhiteSpace(info.DownloadUrl))
-            return;
-
-        try
-        {
-            await Launcher.Default.OpenAsync(new Uri(info.DownloadUrl));
-        }
-        catch
-        {
-            await DisplayAlert("Actualización", "No se pudo abrir el enlace de descarga.", "Aceptar");
-        }
     }
 
     protected override void OnDisappearing()
     {
+        StopMovementMonitoring(this, EventArgs.Empty);
+        if (Window is { } window)
+        {
+            window.Activated -= StartMovementMonitoring;
+            window.Deactivated -= StopMovementMonitoring;
+        }
         base.OnDisappearing();
+    }
+
+    private void StartMovementMonitoring(object? sender, EventArgs e)
+    {
+        if (PermissionService.MovementEnabled && AppSession.Account is not null)
+            _monitoringMovement = _shakeDetector.Start();
+    }
+
+    private void StopMovementMonitoring(object? sender, EventArgs e)
+    {
+        _monitoringMovement = false;
         _shakeDetector.Stop();
+    }
+
+    private async void MovementDetected(object? sender, EventArgs e)
+    {
+        if (!_monitoringMovement || _movementPromptOpen || AppSession.Account is null)
+            return;
+
+        _movementPromptOpen = true;
+        try
+        {
+            var openDialer = await DisplayAlert(
+                "Movimiento brusco detectado",
+                "¿Necesitas ayuda? Si eliges llamar, se abrirá el marcador con el 911.",
+                "Llamar al 911",
+                "Estoy bien");
+
+            if (openDialer)
+                await _homeView.OpenEmergencyDialerAsync();
+        }
+        finally
+        {
+            _movementPromptOpen = false;
+        }
+    }
+
+    private async Task RefreshLocationAsync()
+    {
+        if (!await LocationService.RefreshAsync())
+            return;
+        _homeView.RefreshView();
     }
 
     private void UpdateHeader()
@@ -200,79 +186,10 @@ public partial class MainPage : ContentPage
         if (!confirm)
             return;
 
-        _shakeDetector.Stop();
         AppSession.Logout();
 
         var window = Application.Current?.Windows.FirstOrDefault();
         if (window != null)
             window.Page = new LoginPage();
-    }
-
-    private async void ShakeSettingChanged(bool enabled)
-    {
-        if (!enabled)
-        {
-            _shakeDetector.Stop();
-            return;
-        }
-
-        if (_shakeDetector.Start())
-        {
-            if (_sensorInfoShown)
-                return;
-
-            _sensorInfoShown = true;
-            await DisplayAlert(
-                "Sensor de movimiento activo",
-                "SafeAlert usará el acelerómetro para detectar sacudidas fuertes. En Android el acelerómetro no requiere un permiso especial: solo se lee mientras la app está abierta y no se guarda el movimiento continuo.",
-                "Entendido");
-            return;
-        }
-
-        if (_sensorInfoShown)
-            return;
-
-        _sensorInfoShown = true;
-        await DisplayAlert(
-            "Acelerómetro no disponible",
-            "Este equipo Windows no reporta un acelerómetro. La detección de sacudidas ya está implementada y se activará automáticamente en un teléfono Android o iOS. Puedes usar \"Probar sensor\" para simular el evento.",
-            "Entendido");
-    }
-
-    private void SimulateShake() => _ = HandleShakeAsync();
-
-    private async void ShakeDetected(object? sender, EventArgs e) => await HandleShakeAsync();
-
-    private async Task HandleShakeAsync()
-    {
-        if (_shakePromptOpen)
-            return;
-
-        _shakePromptOpen = true;
-        var send = await DisplayAlert(
-            "Movimiento brusco detectado",
-            "El acelerómetro registró una sacudida. ¿Deseas registrar una alerta SOS para tus contactos? No se realizarán llamadas ni envíos externos.",
-            "Enviar SOS",
-            "Cancelar");
-        _shakePromptOpen = false;
-
-        if (!send)
-            return;
-
-        var alert = AlertService.Send(
-            EmergencyType.Panic,
-            "Alerta SOS activada por detección de sacudida (acelerómetro).",
-            LocationService.Address,
-            LocationService.Latitude,
-            LocationService.Longitude);
-
-        _homeView.RefreshView();
-        _historyView.RefreshView();
-        SwitchTab(3);
-
-        await DisplayAlert(
-            "Alerta enviada",
-            $"Alerta SOS registrada para {alert.NotifiedContacts} contacto(s). No se realizó una llamada ni envío externo.",
-            "Aceptar");
     }
 }
